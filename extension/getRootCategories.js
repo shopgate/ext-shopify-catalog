@@ -36,9 +36,6 @@ async function getRootCategories () {
   }
 
   const json = await response.json()
-  console.log('+++++++++++++++++++++++++++')
-  console.log(response)
-  console.log('+++++++++++++++++++++++++++')
   const rootCategories = new RootCategories()
 
   rootCategories.addCategories(json.collection_listings)
