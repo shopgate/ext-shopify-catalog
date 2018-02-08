@@ -1,6 +1,5 @@
 const fetch = require('node-fetch')
 const RootCategories = require('./models/catalog/rootCategories/rootCategories')
-let shopifyAccessToken = null
 let Shopify = null
 
 /**
@@ -11,7 +10,6 @@ let Shopify = null
  */
 module.exports = async (context, input, cb) => {
   Shopify = require('./lib/shopify.api')(context.config)
-  shopifyAccessToken = context.config.shopifyAccessToken
 
   try {
     /* Needs to be an Array because of the specifications */
@@ -29,7 +27,10 @@ module.exports = async (context, input, cb) => {
  * @returns {Promise.<RootCategories>}
  */
 async function getRootCategories () {
-  const response = await fetch(Shopify.getCollectionListingUrl(), getRequestHeader())
+  const response = await fetch(
+    Shopify.getGraphQlUrl(),
+    Shopify.getGraphQlApiRequestHeader(JSON.stringify(getGraphQlBody()))
+  )
 
   if (!response) {
     throw new Error('Invalid resonse.')
@@ -37,19 +38,47 @@ async function getRootCategories () {
 
   const json = await response.json()
   const rootCategories = new RootCategories()
-
-  rootCategories.addCategories(json.collection_listings)
+  rootCategories.addCategories(json.data.shop.collections.edges)
 
   //Get product count for each category
   if (Array.isArray(rootCategories)) {
     rootCategories.RootCategories.forEach(async (rootCategory) => {
       rootCategory.productCount = await getProductCount(rootCategory.id)
     })
-  } else {
-    rootCategories.productCount = await getProductCount(rootCategories.id)
+
+    return rootCategories
   }
 
+  rootCategories.productCount = await getProductCount(rootCategories.id)
   return rootCategories
+}
+
+/**
+ * Return the Query-Body which will be send to the GraphQl-API
+ * @returns {{query: string}}
+ */
+function getGraphQlBody () {
+  return {
+    query: `
+    query { 
+      shop { 
+        collections (first: 250) { 
+          pageInfo { 
+            hasNextPage,hasPreviousPage
+          },
+          edges { 
+            node {
+             id,
+             title,
+             image {
+              transformedSrc
+             }
+            } 
+          } 
+        } 
+      } 
+    }`,
+  }
 }
 
 /**
@@ -58,7 +87,7 @@ async function getRootCategories () {
  * @returns {Promise.<void>}
  */
 async function getProductCount (rootCategoryId) {
-  const response = await fetch(Shopify.getCollectionProductCountUrl(rootCategoryId), getRequestHeader())
+  const response = await fetch(Shopify.getCollectionProductCountUrl(rootCategoryId), Shopify.getAdminApiRequestHeader())
 
   if (!response) {
     throw new Error('Invalid resonse.')
@@ -66,18 +95,4 @@ async function getProductCount (rootCategoryId) {
 
   const json = await response.json()
   return json.count
-}
-
-/**
- * Adds necessary Header-Informations which are needed for the Request
- * @returns {object}
- */
-function getRequestHeader () {
-  return {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Shopify-Access-Token': shopifyAccessToken
-    }
-  }
 }
