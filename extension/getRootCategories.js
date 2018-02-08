@@ -13,11 +13,11 @@ module.exports = async (context, input, cb) => {
   Shopify = require('./lib/shopify.api')(context.config)
   shopifyAccessToken = context.config.shopifyAccessToken
 
-  /* Needs to be an Array because of the specifications */
-  const rootCategories = []
-  rootCategories.push(await getRootCategories())
-
   try {
+    /* Needs to be an Array because of the specifications */
+    const rootCategories = []
+    rootCategories.push(await getRootCategories())
+
     cb(null, {categories: rootCategories})
   } catch (err) {
     cb(err)
