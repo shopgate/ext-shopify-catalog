@@ -1,66 +1,83 @@
 const fetch = require('node-fetch')
 const InvalidResponseError = require('../models/errors/InvalidResponseError')
-const targetTokenTitle = 'Access Token for WEBC-546'
+
 /**
- *
- * @param config
- * @returns {object}
+ * Class for interacting with the Shopify-APIs
  */
-module.exports = function (config) {
-  const module = {}
-  const shopDomain = 'https://' + config.shopifyShopAlias + '.myshopify.com'
-
-  module.getCollectionListingUrl = () => {
-    return shopDomain + '/admin/collection_listings.json'
-  }
-
-  module.getCollectionProductCountUrl = (collectionId) => {
-    return shopDomain + '/admin/products/count.json?collection_id=' + collectionId
-  }
-
-  module.getGraphQlUrl = () => {
-    return shopDomain + '/api/graphql'
-  }
-
-  module.getStorefrontAccessTokenUrl = () => {
-    return shopDomain + '/admin/storefront_access_tokens.json'
+class Shopify {
+  /**
+   * @typedef {object} config
+   * @property {string} config.shopifyShopAlias
+   * @property {string} config.shopifyAccessToken
+   * @param config
+   */
+  constructor(config) {
+    this.config = config
+    this.shopDomain = 'https://' + config.shopifyShopAlias + '.myshopify.com'
+    this.targetTokenTitle = 'Access Token for WEBC-546' //TODO Has to be part of the config
   }
 
   /**
-   * Adds necessary Header-Information which are needed for the Request
+   * Returns the product count for collection endpoint
+   * @param collectionId
+   * @returns {string}
+   */
+  getCollectionProductCountUrl(collectionId) {
+    return this.shopDomain + '/admin/products/count.json?collection_id=' + collectionId
+  }
+
+  /**
+   * Returns the GraphQL endpoint
+   * @returns {string}
+   */
+  getGraphQlUrl() {
+    return this.shopDomain + '/api/graphql'
+  }
+
+  /**
+   * Returns the storefront access token endpoint
+   * @returns {string}
+   */
+  getStorefrontAccessTokenUrl() {
+    return this.shopDomain + '/admin/storefront_access_tokens.json'
+  }
+
+  /**
+   * Returns the request header for sending requests to the Admin-API
    * @returns {object}
    */
-  module.getAdminApiRequestHeader = () => {
+  getAdminApiRequestHeader() {
     return {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'X-Shopify-Access-Token': config.shopifyAccessToken
+        'X-Shopify-Access-Token': this.config.shopifyAccessToken
       }
     }
   }
 
   /**
-   *
+   * Returns the request header for sending requests to the GraphQL-API, also get's the necessary storefront access token
    * @param body
-   * @returns {object}
+   * @returns {Promise.<{object}>}
    */
-  module.getGraphQlApiRequestHeader = async (body) => {
+  async getGraphQlApiRequestHeader(body) {
     return {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Shopify-Storefront-Access-Token': await module.getStorefrontAccessToken()
+        'X-Shopify-Storefront-Access-Token': await this.getStorefrontAccessToken()
       },
       body: body
     }
   }
 
   /**
-   * @returns string
+   * Returns the storefront access token, which is requested via Admin-API
+   * @returns {Promise.<{string}>}
    */
-  module.getStorefrontAccessToken = async () => {
-    const response = await fetch(module.getStorefrontAccessTokenUrl(), module.getAdminApiRequestHeader())
+  async getStorefrontAccessToken() {
+    const response = await fetch(this.getStorefrontAccessTokenUrl(), this.getAdminApiRequestHeader())
 
     let json = null
 
@@ -80,19 +97,18 @@ module.exports = function (config) {
 
     let token = null
     // Iterate through the tokens, we only need that one that's equal to the targetTokenTitle
-    json.storefront_access_tokens.forEach((storefrontAccessToken) => {
-      if (storefrontAccessToken.title === targetTokenTitle) {
+    for (const storefrontAccessToken of json.storefront_access_tokens) {
+      if (storefrontAccessToken.title === this.targetTokenTitle) {
         token = storefrontAccessToken.access_token
       }
-    })
+    }
 
     if (!token) {
-      throw new InvalidResponseError('Can\'t find matching Storefront-Accesstoken for \'' + targetTokenTitle + '\'')
+      throw new InvalidResponseError('Can\'t find matching Storefront-Accesstoken for \'' + this.targetTokenTitle + '\'')
     }
 
     return token
   }
-
-
-  return module
 }
+
+module.exports = Shopify
