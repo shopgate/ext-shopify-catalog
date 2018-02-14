@@ -71,12 +71,11 @@ module.exports = function (config) {
        */
       json = await response.json()
     } catch (err) {
-      console.debug(err)
-      throw new InvalidResponseError()
+      throw new InvalidResponseError(err)
     }
 
     if (!json.storefront_access_tokens) {
-      throw new InvalidResponseError()
+      throw new InvalidResponseError('Can\'t find json.storefront_access_tokens in response from Admin-API')
     }
 
     let token = null
@@ -88,7 +87,7 @@ module.exports = function (config) {
     })
 
     if (!token) {
-      throw new InvalidResponseError()
+      throw new InvalidResponseError('Can\'t find matching Storefront-Accesstoken for \'' + targetTokenTitle + '\'')
     }
 
     return token

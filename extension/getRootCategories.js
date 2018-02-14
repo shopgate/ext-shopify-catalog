@@ -40,13 +40,12 @@ getRootCategories = async (Shopify) =>  {
      */
     json = await response.json()
   } catch (err) {
-    console.debug(err)
-    throw new InvalidResponseError()
+    throw new InvalidResponseError(err)
   }
 
   // Check if the response has the expected format
   if (!json.data.shop.collections.edges) {
-    throw new InvalidResponseFormatError()
+    throw new InvalidResponseFormatError('Can\'t find json.data.shop.collections.edges in response from the GraphQL-Api')
   }
 
   const rootCategories = new RootCategories()
@@ -54,8 +53,7 @@ getRootCategories = async (Shopify) =>  {
   try {
     rootCategories.addCategories(json.data.shop.collections.edges)
   } catch (err) {
-    console.debug(err)
-    throw new InvalidResponseFormatError()
+    throw new InvalidResponseFormatError(err)
   }
 
   // Get product count for each category
@@ -93,8 +91,7 @@ getProductCount = async (rootCategoryId, Shopify) => {
   try {
     json = await response.json()
   } catch (err) {
-    console.debug(err)
-    throw new InvalidResponseError()
+    throw new InvalidResponseError(err)
   }
 
   return json.count
