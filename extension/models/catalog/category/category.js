@@ -2,12 +2,20 @@
  * Category Model
  */
 class Category {
-  constructor () {
-    this.id = 0
-    this.name = ''
-    this.productCount = 0
-    this.imageUrl = ''
-    this.childrenCount = 0
+
+  /**
+   * @param id
+   * @param name
+   * @param imageUrl
+   * @param productCount
+   * @param childrenCount
+   */
+  constructor (id, name, imageUrl, productCount = 0, childrenCount = 0) {
+    this.id = id
+    this.name = name
+    this.productCount = productCount
+    this.imageUrl = imageUrl
+    this.childrenCount = childrenCount
   }
 }
 

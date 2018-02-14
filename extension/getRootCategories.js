@@ -1,98 +1,101 @@
 const fetch = require('node-fetch')
 const RootCategories = require('./models/catalog/rootCategories/rootCategories')
-let Shopify = null
+const InvalidResponseError = require('./models/errors/InvalidResponseError')
+const InvalidResponseFormatError = require('./models/errors/InvalidResponseFormatError')
+const CategoryIdMissingError = require('./models/errors/CategoryIdMissingError')
+const graphQlQueries = require('./lib/graphQlQueries')
 
 /**
  * @param context
  * @param input
  * @param cb
- * @returns {Promise.<void>}
+ * @returns {function} cb
  */
 module.exports = async (context, input, cb) => {
-  Shopify = require('./lib/shopify.api')(context.config)
+  const Shopify = require('./lib/shopify.api')(context.config)
 
   try {
-    /* Needs to be an Array because of the specifications */
-    const rootCategories = []
-    rootCategories.push(await getRootCategories())
-
-    cb(null, {categories: rootCategories})
+    const categories = await getRootCategories(Shopify)
+    cb(null, {categories})
   } catch (err) {
     cb(err)
   }
 }
 
 /**
- * Get Root-Categories
- * @returns {Promise.<RootCategories>}
+ * @param Shopify
+ * @returns {Promise.<Array>}
  */
-async function getRootCategories () {
+getRootCategories = async (Shopify) =>  {
   const response = await fetch(
     Shopify.getGraphQlUrl(),
-    Shopify.getGraphQlApiRequestHeader(JSON.stringify(getGraphQlBody()))
+    await Shopify.getGraphQlApiRequestHeader(JSON.stringify(graphQlQueries.getRootCategories()))
   )
 
-  if (!response) {
-    throw new Error('Invalid resonse.')
+  let json = null
+  try {
+    /**
+     * @typedef {object} json
+     * @property {array} json.data.shop.collections.edges
+     */
+    json = await response.json()
+  } catch (err) {
+    console.debug(err)
+    throw new InvalidResponseError()
   }
 
-  const json = await response.json()
+  // Check if the response has the expected format
+  if (!json.data.shop.collections.edges) {
+    throw new InvalidResponseFormatError()
+  }
+
   const rootCategories = new RootCategories()
-  rootCategories.addCategories(json.data.shop.collections.edges)
 
-  //Get product count for each category
-  if (Array.isArray(rootCategories)) {
-    rootCategories.RootCategories.forEach(async (rootCategory) => {
-      rootCategory.productCount = await getProductCount(rootCategory.id)
-    })
-
-    return rootCategories
+  try {
+    rootCategories.addCategories(json.data.shop.collections.edges)
+  } catch (err) {
+    console.debug(err)
+    throw new InvalidResponseFormatError()
   }
 
-  rootCategories.productCount = await getProductCount(rootCategories.id)
-  return rootCategories
+  // Get product count for each category
+  return await getCategoryProductCount(rootCategories, Shopify)
 }
 
 /**
- * Return the Query-Body which will be send to the GraphQl-API
- * @returns {{query: string}}
+ * #
+ * @param rootCategories
+ * @param Shopify
+ * @returns Array
  */
-function getGraphQlBody () {
-  return {
-    query: `
-    query { 
-      shop { 
-        collections (first: 250) { 
-          pageInfo { 
-            hasNextPage,hasPreviousPage
-          },
-          edges { 
-            node {
-             id,
-             title,
-             image {
-              transformedSrc
-             }
-            } 
-          } 
-        } 
-      } 
-    }`,
+getCategoryProductCount = async (rootCategories, Shopify) => {
+  for (const rootCategory of rootCategories.categories) {
+    if (!rootCategory.id) {
+      throw new CategoryIdMissingError()
+    }
+    rootCategory.productCount = await getProductCount(rootCategory.id, Shopify)
   }
+
+  return rootCategories.categories
 }
 
 /**
  * Gets the productCount for the given rootCategoryId
  * @param rootCategoryId
- * @returns {Promise.<void>}
+ * @param Shopify
+ * @returns {Promise.<int>}
  */
-async function getProductCount (rootCategoryId) {
+getProductCount = async (rootCategoryId, Shopify) => {
   const response = await fetch(Shopify.getCollectionProductCountUrl(rootCategoryId), Shopify.getAdminApiRequestHeader())
 
-  if (!response) {
-    throw new Error('Invalid resonse.')
+  let json = null
+
+  try {
+    json = await response.json()
+  } catch (err) {
+    console.debug(err)
+    throw new InvalidResponseError()
   }
 
-  const json = await response.json()
   return json.count
 }

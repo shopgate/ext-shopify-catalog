@@ -1,6 +1,5 @@
 class Tools {
   /**
-   * @property {Object} path.storage.device
    * @param {Object} obj
    * @param {String} path
    * @return {Boolean}
