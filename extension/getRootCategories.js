@@ -4,18 +4,29 @@ const InvalidResponseError = require('./models/errors/InvalidResponseError')
 const InvalidResponseFormatError = require('./models/errors/InvalidResponseFormatError')
 const CategoryIdMissingError = require('./models/errors/CategoryIdMissingError')
 const graphQlQueries = require('./lib/graphQlQueries')
+const Shopify = require('./lib/shopify.api')
+const ConfigError = require('./models/errors/ConfigError')
 
 /**
+ * /**
+ * @typedef {object} config
+ * @property {string} config.shopifyShopAlias
+ * @property {string} config.shopifyAccessToken
  * @param context
  * @param input
  * @param cb
  * @returns {function} cb
  */
 module.exports = async (context, input, cb) => {
-  const Shopify = require('./lib/shopify.api')(context.config)
+  const shopify = new Shopify(context.config)
+
+  // Small verification if the config includes the minimum values we need here
+  if (!shopify.config.shopifyShopAlias || !shopify.config.shopifyAccessToken) {
+    throw new ConfigError()
+  }
 
   try {
-    const categories = await getRootCategories(Shopify)
+    const categories = await getRootCategories(shopify)
     cb(null, {categories})
   } catch (err) {
     cb(err)
@@ -23,20 +34,21 @@ module.exports = async (context, input, cb) => {
 }
 
 /**
- * @param Shopify
+ * @param shopify
  * @returns {Promise.<Array>}
  */
-getRootCategories = async (Shopify) =>  {
+getRootCategories = async (shopify) =>  {
+
   const response = await fetch(
-    Shopify.getGraphQlUrl(),
-    await Shopify.getGraphQlApiRequestHeader(JSON.stringify(graphQlQueries.getRootCategories()))
+    shopify.getGraphQlUrl(),
+    await shopify.getGraphQlApiRequestHeader(JSON.stringify(graphQlQueries.getRootCategories()))
   )
 
   let json = null
   try {
     /**
      * @typedef {object} json
-     * @property {array} json.data.shop.collections.edges
+     * @property {Array} json.data.shop.collections.edges
      */
     json = await response.json()
   } catch (err) {
@@ -57,21 +69,21 @@ getRootCategories = async (Shopify) =>  {
   }
 
   // Get product count for each category
-  return await getCategoryProductCount(rootCategories, Shopify)
+  return await getCategoryProductCount(rootCategories, shopify)
 }
 
 /**
  * #
  * @param rootCategories
- * @param Shopify
+ * @param shopify
  * @returns Array
  */
-getCategoryProductCount = async (rootCategories, Shopify) => {
+getCategoryProductCount = async (rootCategories, shopify) => {
   for (const rootCategory of rootCategories.categories) {
     if (!rootCategory.id) {
       throw new CategoryIdMissingError()
     }
-    rootCategory.productCount = await getProductCount(rootCategory.id, Shopify)
+    rootCategory.productCount = await getProductCount(rootCategory.id, shopify)
   }
 
   return rootCategories.categories
@@ -80,11 +92,11 @@ getCategoryProductCount = async (rootCategories, Shopify) => {
 /**
  * Gets the productCount for the given rootCategoryId
  * @param rootCategoryId
- * @param Shopify
+ * @param shopify
  * @returns {Promise.<int>}
  */
-getProductCount = async (rootCategoryId, Shopify) => {
-  const response = await fetch(Shopify.getCollectionProductCountUrl(rootCategoryId), Shopify.getAdminApiRequestHeader())
+getProductCount = async (rootCategoryId, shopify) => {
+  const response = await fetch(shopify.getCollectionProductCountUrl(rootCategoryId), shopify.getAdminApiRequestHeader())
 
   let json = null
 
