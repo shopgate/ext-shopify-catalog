@@ -13,11 +13,9 @@ const ConfigError = require('./models/errors/ConfigError')
  * @property {string} config.shopifyShopAlias
  * @property {string} config.shopifyAccessToken
  * @param context
- * @param input
- * @param cb
  * @returns {function} cb
  */
-module.exports = async (context, input, cb) => {
+module.exports = async (context) => {
   const shopify = new Shopify(context.config)
 
   // Small verification if the config includes the minimum values we need here
@@ -27,9 +25,9 @@ module.exports = async (context, input, cb) => {
 
   try {
     const categories = await getRootCategories(shopify)
-    cb(null, {categories})
+    return {categories}
   } catch (err) {
-    cb(err)
+    throw new InvalidResponseError(err)
   }
 }
 
