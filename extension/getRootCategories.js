@@ -35,9 +35,12 @@ module.exports = async (context, input, cb) => {
 
 /**
  * @param shopify
+ * @param {boolean} hasNextPage
+ * @param {string} cursor
  * @returns {Promise.<Array>}
+ * @TODO Pagination via cursor with "after" property at collections filter
  */
-getRootCategories = async (shopify) =>  {
+getRootCategories = async (shopify, hasNextPage = false, cursor = '') =>  {
 
   const response = await fetch(
     shopify.getGraphQlUrl(),
@@ -68,7 +71,7 @@ getRootCategories = async (shopify) =>  {
     throw new InvalidResponseFormatError(err)
   }
 
-  // Get product count for each category
+  // Get product count for each category and return the result
   return await getCategoryProductCount(rootCategories, shopify)
 }
 
