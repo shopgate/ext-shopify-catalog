@@ -10,12 +10,10 @@ This Shopify extension will request categories and products directly via Shopify
 To be able to work with this extension, you have to create a config.json within the "sgconnect-shopify-catalog/extension" folder.
 This file has to contain the following information:
 
-```
-{
-    "shopifyShopAlias": "YourAlias",
-    "shopifyAccessToken": "YourAccessToken"
-}
-```
+	{
+		"shopifyShopAlias": "YourAlias",
+		"shopifyAccessToken": "YourAccessToken"
+	}
 
 ## Changelog
 
