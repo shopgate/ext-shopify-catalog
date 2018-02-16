@@ -2,7 +2,6 @@
  * Category Model
  */
 class Category {
-
   /**
    * @param {string} id
    * @param {string} name

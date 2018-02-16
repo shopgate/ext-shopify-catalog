@@ -4,7 +4,7 @@ const Category = require('../category/category')
  * RootCategories Model
  */
 class RootCategories {
-  constructor() {
+  constructor () {
     this.categories = []
   }
 
@@ -13,7 +13,7 @@ class RootCategories {
    * @typedef {object} categories
    * @property {string} category.node.image.transformedSrc
    */
-  addCategories(categories) {
+  addCategories (categories) {
     const regExp = new RegExp(/([0-9])\w+/)
     categories.forEach((category) => {
       /*

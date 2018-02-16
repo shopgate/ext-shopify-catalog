@@ -11,10 +11,10 @@ class Shopify {
    * @property {string} shopifyAccessToken
    * @param {ShopifyConfig} ShopifyConfig
    */
-  constructor(ShopifyConfig) {
+  constructor (ShopifyConfig) {
     this.config = ShopifyConfig
     this.shopDomain = `https://${ShopifyConfig.shopifyShopAlias}.myshopify.com`
-    this.targetTokenTitle = 'Access Token for WEBC-546' //TODO Has to be part of the config
+    this.targetTokenTitle = 'Access Token for WEBC-546' // TODO Has to be part of the config
   }
 
   /**
@@ -22,7 +22,7 @@ class Shopify {
    * @param {string} collectionId
    * @returns {string}
    */
-  getCollectionProductCountUrl(collectionId) {
+  getCollectionProductCountUrl (collectionId) {
     return this.shopDomain + '/admin/products/count.json?collection_id=' + collectionId
   }
 
@@ -30,7 +30,7 @@ class Shopify {
    * Returns the GraphQL endpoint
    * @returns {string}
    */
-  getGraphQlUrl() {
+  getGraphQlUrl () {
     return this.shopDomain + '/api/graphql'
   }
 
@@ -38,7 +38,7 @@ class Shopify {
    * Returns the storefront access token endpoint
    * @returns {string}
    */
-  getStorefrontAccessTokenUrl() {
+  getStorefrontAccessTokenUrl () {
     return this.shopDomain + '/admin/storefront_access_tokens.json'
   }
 
@@ -46,7 +46,7 @@ class Shopify {
    * Returns the request header for sending requests to the Admin-API
    * @returns {object}
    */
-  getAdminApiRequestHeader() {
+  getAdminApiRequestHeader () {
     return {
       method: 'GET',
       headers: {
@@ -61,7 +61,7 @@ class Shopify {
    * @param {string} body
    * @returns {Promise.<{object}>}
    */
-  async getGraphQlApiRequestHeader(body) {
+  async getGraphQlApiRequestHeader (body) {
     return {
       method: 'POST',
       headers: {
@@ -76,7 +76,7 @@ class Shopify {
    * Returns the storefront access token, which is requested via Admin-API
    * @returns {Promise.<{string}>}
    */
-  async getStorefrontAccessToken() {
+  async getStorefrontAccessToken () {
     const response = await fetch(this.getStorefrontAccessTokenUrl(), this.getAdminApiRequestHeader())
 
     let json = null

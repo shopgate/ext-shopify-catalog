@@ -35,8 +35,7 @@ module.exports = async (context) => {
  * @param {Shopify} shopify
  * @returns {Promise.<Array>}
  */
-getRootCategories = async (shopify) =>  {
-
+async function getRootCategories (shopify) {
   const response = await fetch(
     shopify.getGraphQlUrl(),
     await shopify.getGraphQlApiRequestHeader(JSON.stringify(graphQlQueries.getRootCategories()))
@@ -67,7 +66,7 @@ getRootCategories = async (shopify) =>  {
   }
 
   // Get product count for each category
-  return await getCategoryProductCount(rootCategories, shopify)
+  return getCategoryProductCount(rootCategories, shopify)
 }
 
 /**
@@ -76,7 +75,7 @@ getRootCategories = async (shopify) =>  {
  * @param {Shopify} shopify
  * @returns Array
  */
-getCategoryProductCount = async (rootCategories, shopify) => {
+async function getCategoryProductCount (rootCategories, shopify) {
   for (const rootCategory of rootCategories.categories) {
     if (!rootCategory.id) {
       throw new CategoryIdMissingError()
@@ -93,7 +92,7 @@ getCategoryProductCount = async (rootCategories, shopify) => {
  * @param {Shopify} shopify
  * @returns {Promise.<int>}
  */
-getProductCount = async (rootCategoryId, shopify) => {
+async function getProductCount (rootCategoryId, shopify) {
   const response = await fetch(shopify.getCollectionProductCountUrl(rootCategoryId), shopify.getAdminApiRequestHeader())
 
   let json = null
