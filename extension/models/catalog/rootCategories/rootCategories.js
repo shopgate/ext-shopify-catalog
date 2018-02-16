@@ -9,7 +9,7 @@ class RootCategories {
   }
 
   /**
-   * @param {Array} categories
+   * @param {[object]} categories
    * @typedef {object} categories
    * @property {string} category.node.image.transformedSrc
    */

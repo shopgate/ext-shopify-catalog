@@ -4,11 +4,11 @@
 class Category {
 
   /**
-   * @param id
-   * @param name
-   * @param imageUrl
-   * @param productCount
-   * @param childrenCount
+   * @param {string} id
+   * @param {string} name
+   * @param {string} imageUrl
+   * @param {int} productCount
+   * @param {int} childrenCount
    */
   constructor (id, name, imageUrl, productCount = 0, childrenCount = 0) {
     this.id = id

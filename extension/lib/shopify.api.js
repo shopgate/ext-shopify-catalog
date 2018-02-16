@@ -6,20 +6,20 @@ const InvalidResponseError = require('../models/errors/InvalidResponseError')
  */
 class Shopify {
   /**
-   * @typedef {object} config
-   * @property {string} config.shopifyShopAlias
-   * @property {string} config.shopifyAccessToken
-   * @param config
+   * @typedef {object} ShopifyConfig
+   * @property {string} shopifyShopAlias
+   * @property {string} shopifyAccessToken
+   * @param {ShopifyConfig} ShopifyConfig
    */
-  constructor(config) {
-    this.config = config
-    this.shopDomain = 'https://' + config.shopifyShopAlias + '.myshopify.com'
+  constructor(ShopifyConfig) {
+    this.config = ShopifyConfig
+    this.shopDomain = `https://${ShopifyConfig.shopifyShopAlias}.myshopify.com`
     this.targetTokenTitle = 'Access Token for WEBC-546' //TODO Has to be part of the config
   }
 
   /**
    * Returns the product count for collection endpoint
-   * @param collectionId
+   * @param {string} collectionId
    * @returns {string}
    */
   getCollectionProductCountUrl(collectionId) {
@@ -58,7 +58,7 @@ class Shopify {
 
   /**
    * Returns the request header for sending requests to the GraphQL-API, also get's the necessary storefront access token
-   * @param body
+   * @param {string} body
    * @returns {Promise.<{object}>}
    */
   async getGraphQlApiRequestHeader(body) {
@@ -88,7 +88,7 @@ class Shopify {
        */
       json = await response.json()
     } catch (err) {
-      throw new InvalidResponseError(err)
+      throw new InvalidResponseError(err.message)
     }
 
     if (!json.storefront_access_tokens) {

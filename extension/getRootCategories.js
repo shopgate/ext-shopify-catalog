@@ -5,14 +5,14 @@ const InvalidResponseFormatError = require('./models/errors/InvalidResponseForma
 const CategoryIdMissingError = require('./models/errors/CategoryIdMissingError')
 const graphQlQueries = require('./lib/graphQlQueries')
 const Shopify = require('./lib/shopify.api')
-const ConfigError = require('./models/errors/ConfigError')
+const MissingConfigError = require('./models/errors/MissingConfigError')
 
 /**
  * /**
  * @typedef {object} config
  * @property {string} config.shopifyShopAlias
  * @property {string} config.shopifyAccessToken
- * @param context
+ * @param {object} context
  * @returns {function} cb
  */
 module.exports = async (context) => {
@@ -20,19 +20,19 @@ module.exports = async (context) => {
 
   // Small verification if the config includes the minimum values we need here
   if (!shopify.config.shopifyShopAlias || !shopify.config.shopifyAccessToken) {
-    throw new ConfigError()
+    throw new MissingConfigError()
   }
 
   try {
     const categories = await getRootCategories(shopify)
     return {categories}
   } catch (err) {
-    throw new InvalidResponseError(err)
+    throw new InvalidResponseError(err.message)
   }
 }
 
 /**
- * @param shopify
+ * @param {Shopify} shopify
  * @returns {Promise.<Array>}
  */
 getRootCategories = async (shopify) =>  {
@@ -46,16 +46,16 @@ getRootCategories = async (shopify) =>  {
   try {
     /**
      * @typedef {object} json
-     * @property {Array} json.data.shop.collections.edges
+     * @property {[Object]} json.data.shop.collections.edges
      */
     json = await response.json()
   } catch (err) {
-    throw new InvalidResponseError(err)
+    throw new InvalidResponseError(err.message)
   }
 
   // Check if the response has the expected format
   if (!json.data.shop.collections.edges) {
-    throw new InvalidResponseFormatError('Can\'t find json.data.shop.collections.edges in response from the GraphQL-Api')
+    throw new InvalidResponseFormatError('Can\'t find json.data.shop.collections.edges in response from the GraphQL-API')
   }
 
   const rootCategories = new RootCategories()
@@ -63,7 +63,7 @@ getRootCategories = async (shopify) =>  {
   try {
     rootCategories.addCategories(json.data.shop.collections.edges)
   } catch (err) {
-    throw new InvalidResponseFormatError(err)
+    throw new InvalidResponseFormatError(err.message)
   }
 
   // Get product count for each category
@@ -72,8 +72,8 @@ getRootCategories = async (shopify) =>  {
 
 /**
  * #
- * @param rootCategories
- * @param shopify
+ * @param {RootCategories} rootCategories
+ * @param {Shopify} shopify
  * @returns Array
  */
 getCategoryProductCount = async (rootCategories, shopify) => {
@@ -89,8 +89,8 @@ getCategoryProductCount = async (rootCategories, shopify) => {
 
 /**
  * Gets the productCount for the given rootCategoryId
- * @param rootCategoryId
- * @param shopify
+ * @param {string} rootCategoryId
+ * @param {Shopify} shopify
  * @returns {Promise.<int>}
  */
 getProductCount = async (rootCategoryId, shopify) => {
@@ -101,7 +101,7 @@ getProductCount = async (rootCategoryId, shopify) => {
   try {
     json = await response.json()
   } catch (err) {
-    throw new InvalidResponseError(err)
+    throw new InvalidResponseError(err.message)
   }
 
   return json.count
