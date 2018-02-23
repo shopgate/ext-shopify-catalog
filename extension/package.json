@@ -12,7 +12,10 @@
     "check": "nsp check",
     "cover:unit": "nyc _mocha --require ../test/setupBackend.js --recursive ../test/unit",
     "cover:integration": "nyc _mocha --use_strict --timeout 3000 --require ../test/setupBackend.js --recursive ../test/integration",
-    "cover": "nyc _mocha --use_strict --timeout 3000 --require ../test/setupBackend.js --recursive ../test/integration --recursive ../test/unit"
+    "cover": "nyc _mocha --use_strict --timeout 3000 --require ../test/setupBackend.js --recursive ../test/integration --recursive ../test/unit",
+    "update:schema": "npm run schema:fetch && npm run schema:transform-to-types && eslint --fix lib/types.js",
+    "schema:fetch": "graphql-js-schema-fetch --url 'https://graphql.myshopify.com/api/graphql' --header 'Authorization: Basic MzUxYzEyMjAxN2QwZjJhOTU3ZDMyYWU3MjhhZDc0OWM=' | jq '.' > schema.json",
+    "schema:transform-to-types": "graphql-js-schema --schema-file schema.json --outdir ./lib --schema-bundle-name 'Types' --bundle-only && sed -i -e 's/export default types/exports.default = types/g' lib/types.js"
   },
   "lint-staged": {
     "*.js": "npm run lint"
@@ -22,7 +25,10 @@
     "url": "https://github.com/shopgate/sgconnect-shopify-catalog.git"
   },
   "license": "Apache-2.0",
-  "dependencies": {},
+  "dependencies": {
+    "graphql-js-client": "^0.9.1",
+    "node-fetch": "^2.0.0"
+  },
   "devDependencies": {
     "@types/chai": "^4.1.2",
     "@types/mocha": "^2.2.48",
@@ -36,6 +42,8 @@
     "eslint-plugin-node": "^5.2.1",
     "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-standard": "^3.0.1",
+    "graphql-js-schema": "^0.7.1",
+    "graphql-js-schema-fetch": "^1.1.2",
     "husky": "^0.14.3",
     "lint-staged": "^6.0.0",
     "mocha": "^3.2.0",
