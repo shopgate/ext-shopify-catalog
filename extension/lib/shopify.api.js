@@ -20,9 +20,7 @@ class ShopifyWrapper {
    * @return {Promise.<void>}
    */
   async getProductCountByCollectionId (id) {
-    const products = await this._shopifyAdminClient.product.list({collection_id: id})
-    console.log(products)
-    return products.length
+    return this._shopifyAdminClient.product.count({collection_id: id})
   }
 
   /**
