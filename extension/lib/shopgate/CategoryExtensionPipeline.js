@@ -3,12 +3,26 @@ const ShopifyStorefrontClientFactory = require('../shopify/StorefrontClientFacto
 const ShopifyAdminClientFactory = require('../shopify/AdminClientFactory')
 
 class ShopgateCategoryExtensionPipeline {
-  async getCategory (id) {
+  /**
+   * @param {ShopifyCollectionRepository} shopifyCollectionRepository
+   */
+  constructor (shopifyCollectionRepository) {
+    this._shopifyCollectionRepository = shopifyCollectionRepository
+  }
 
+  async getCategory (id) {
+    // const shopifyCollection = await this._shopifyCollectionRepository.get(id)
+    //
+    // // TODO map to the getCategory response specification
+    // return {
+    //
+    // }
   }
 
   async getRootCategories () {
-
+    return (await this._shopifyCollectionRepository.list()).map((shopifyCollection) => {
+      // TODO map to the getRootCategories response specification
+    })
   }
 
   /**

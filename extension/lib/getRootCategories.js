@@ -1,3 +1,5 @@
+const ShopgateCategoryExtensionPipeline = require('./shopgate/CategoryExtensionPipeline')
+
 const fetch = require('node-fetch')
 const RootCategories = require('./models/catalog/rootCategories/rootCategories')
 const InvalidResponseError = require('./models/errors/InvalidResponseError')
@@ -8,12 +10,8 @@ const Shopify = require('./lib/shopify.api')
 const MissingConfigError = require('./models/errors/MissingConfigError')
 
 /**
- * /**
- * @typedef {object} config
- * @property {string} config.shopifyShopAlias
- * @property {string} config.shopifyAccessToken
- * @param {object} context
- * @returns {function} cb
+ * @param {PipelineContext} context
+ * @returns {Promise<GetRootCategoriesResponse>}
  */
 module.exports = async (context) => {
   const shopify = new Shopify(context.config)
@@ -24,9 +22,14 @@ module.exports = async (context) => {
   }
 
   try {
-    const categories = await getRootCategories(shopify)
-    return {categories}
+    const shopgateCategoryExtensionPipeline = ShopgateCategoryExtensionPipeline.create(context)
+
+    // todo remove with rest of the code as it gets implemented in new structure
+    await getRootCategories(shopify)
+
+    return {categories: await shopgateCategoryExtensionPipeline.getRootCategories()}
   } catch (err) {
+    context.log.error(err)
     throw new InvalidResponseError(err.message)
   }
 }

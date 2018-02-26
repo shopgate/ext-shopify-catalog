@@ -23,7 +23,10 @@ class ShopifyCollectionRepository {
     return new ShopifyCollection(collection.id, collection.title, childrenCount, productCount, collection.image)
   }
 
-  async list (id) {
+  /**
+   * @returns {Promise<ShopifyCollection[]>}
+   */
+  async list () {
 
   }
 
