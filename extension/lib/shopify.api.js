@@ -26,9 +26,12 @@ class ShopifyWrapper {
   /**
    * @return {Promise.<*>}
    */
-  async getStorefrontAccessTokenNew () {
-    const token = await this._shopifyAdminClient.storefrontAccessToken.create({title: STOREFRONT_ACCESS_TOKEN_TITLE})
-    return token
+  async createStorefrontAccessToken () {
+    return this._shopifyAdminClient.storefrontAccessToken.create({title: STOREFRONT_ACCESS_TOKEN_TITLE})
+  }
+
+  async getStorefrontAccessTokens () {
+    return this._shopifyAdminClient.storefrontAccessToken.list()
   }
 }
 
