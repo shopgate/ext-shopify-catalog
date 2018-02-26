@@ -17,8 +17,31 @@ class ShopifyAdminClient extends ShopifyClient {
     return this.storefrontAccessToken.create({title: STOREFRONT_ACCESS_TOKEN_TITLE})
   }
 
+  /**
+   * @return {Promise.<void>}
+   */
   async getStorefrontAccessTokens () {
     return this.storefrontAccessToken.list()
+  }
+
+  /**
+   * @return {Promise<string>}
+   */
+  async getStorefrontAccessToken () {
+    const accessTokens = await this.getStorefrontAccessTokens()
+    const applicableAccessToken = accessTokens.find(token => {
+      if (token.title === STOREFRONT_ACCESS_TOKEN_TITLE) {
+        return token
+      }
+    })
+
+    if (applicableAccessToken) {
+      return applicableAccessToken.access_token
+    }
+
+    const createdAccessToken = await this.createStorefrontAccessToken()
+
+    return createdAccessToken.access_token
   }
 }
 module.exports = ShopifyAdminClient
