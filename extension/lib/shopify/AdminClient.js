@@ -3,6 +3,14 @@ const STOREFRONT_ACCESS_TOKEN_TITLE = 'shopgate-app-access-token'
 
 class ShopifyAdminClient extends ShopifyClient {
   /**
+   * @param {string} adminAccessToken
+   * @param {string} shopName
+   */
+  constructor (adminAccessToken, shopName) {
+    super({shopName: shopName, accessToken: adminAccessToken})
+  }
+
+  /**
    * @param {string} id
    * @return {Promise.<void>}
    */
@@ -44,4 +52,5 @@ class ShopifyAdminClient extends ShopifyClient {
     return createdAccessToken.access_token
   }
 }
+
 module.exports = ShopifyAdminClient

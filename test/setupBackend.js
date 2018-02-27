@@ -16,11 +16,10 @@ const errorCallback = function (err) {
 }
 
 // auto create .integration-credentials.js
-// const integrationTestCredentialFile = path.dirname(__dirname) + '/.integration-credentials.js'
-// fs.writeFile(integrationTestCredentialFile, 'module.exports = {\n' +
-//   '  clientId: \'***\',\n' +
-//   '  accessToken: \'***\',\n' +
-//   '  storeHash: \'***\'\n' +
-//   '}', {flag: 'wx'}, errorCallback)
+const integrationTestCredentialFile = path.dirname(__dirname) + '/.integration-credentials.js'
+fs.writeFile(integrationTestCredentialFile, 'module.exports = {\n' +
+  '  shopName: \'***\',\n' +
+  '  accessToken: \'***\'\n' +
+  '}', {flag: 'wx'}, errorCallback)
 
 Module._initPaths()

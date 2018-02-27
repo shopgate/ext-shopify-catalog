@@ -11,3 +11,4 @@ extension/.nyc_output
 .nyc_output
 extension/config.json
 extension/schema.json
+.integration-credentials.js

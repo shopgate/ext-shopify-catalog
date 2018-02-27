@@ -1,5 +1,5 @@
 const assert = require('assert')
-const StoreFrontApiFactory = require('../../extension/lib/shopify/StorefrontClientFactory')
+const StoreFrontApiFactory = require('../../../../../extension/lib/shopify/StorefrontClientFactory')
 
 describe('StoreFrontApiFactory', () => {
   it('should return an instance of GraphQlClient that is able to contact the Shopify Storefront API', async () => {

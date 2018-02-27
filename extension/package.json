@@ -50,6 +50,7 @@
     "mocha": "^3.2.0",
     "nsp": "^3.1.0",
     "nyc": "^11.3.0",
+    "shopify-api-node-interface": "^1.0.11",
     "sinon": "^4.1.2",
     "standard": "^10.0.3"
   }
