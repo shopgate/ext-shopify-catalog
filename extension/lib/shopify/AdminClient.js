@@ -19,14 +19,14 @@ class ShopifyAdminClient extends ShopifyClient {
   }
 
   /**
-   * @return {Promise}
+   * @return {Promise<ShopifyAccessTokenObject>}
    */
   async createStorefrontAccessToken () {
     return this.storefrontAccessToken.create({title: STOREFRONT_ACCESS_TOKEN_TITLE})
   }
 
   /**
-   * @return {Promise<string[]>}
+   * @return {Promise<ShopifyAccessTokenObject[]>}
    */
   async getStorefrontAccessTokens () {
     return this.storefrontAccessToken.list()
