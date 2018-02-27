@@ -30,8 +30,8 @@ class ShopgateCategoryExtensionPipeline {
    * @returns {ShopgateCategoryExtensionPipeline}
    */
   static create (context) {
+    const shopifyAdminFactory = new ShopifyAdminClientFactory(context.config.shopifyAccessToken, context.config.shopifyShopAlias)
     const shopifyStorefrontFactory = new ShopifyStorefrontClientFactory()
-    const shopifyAdminFactory = new ShopifyAdminClientFactory()
 
     // todo inject the dependencies - storefront and admin client
     const shopifyCollectionRepository = ShopifyCollectionRepository.create(
