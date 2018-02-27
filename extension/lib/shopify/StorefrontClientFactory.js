@@ -1,4 +1,4 @@
-const GraphClient = require('graphql-js-client').default
+const GraphQlClient = require('graphql-js-client').default
 const fetch = require('node-fetch')
 const types = require('./GraphQlTypes').default
 
@@ -7,11 +7,11 @@ global.fetch = fetch
 
 class StoreFrontApiFactory {
   /**
-   * @param {string} shopifyAdminApiAccessToken
+   * @param {string} shopifyStorefrontAccessToken
    * @param {string} shopName
    */
-  constructor (shopifyAdminApiAccessToken, shopName) {
-    this._shopifyAdminApiAccessToken = shopifyAdminApiAccessToken
+  constructor (shopifyStorefrontAccessToken, shopName) {
+    this._shopifyStorefrontAccessToken = shopifyStorefrontAccessToken
     this._shopName = shopName
   }
 
@@ -19,11 +19,11 @@ class StoreFrontApiFactory {
    * @returns GraphQlClient
    */
   create () {
-    return new GraphClient(types, {
+    return new GraphQlClient(types, {
       url: 'https://' + this._shopName + '.myshopify.com/api/graphql',
       fetcherOptions: {
         headers: {
-          'X-Shopify-Storefront-Access-Token': this._shopifyAdminApiAccessToken
+          'X-Shopify-Storefront-Access-Token': this._shopifyStorefrontAccessToken
         }
       }
     })
