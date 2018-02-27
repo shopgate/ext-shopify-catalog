@@ -12,21 +12,21 @@ class ShopifyAdminClient extends ShopifyClient {
 
   /**
    * @param {string} id
-   * @return {Promise.<void>}
+   * @return {Promise<void>}
    */
   async getProductCountByCollectionId (id) {
     return this.product.count({collection_id: id})
   }
 
   /**
-   * @return {Promise.<*>}
+   * @return {Promise<ShopifyAccessTokenObject>}
    */
   async createStorefrontAccessToken () {
     return this.storefrontAccessToken.create({title: STOREFRONT_ACCESS_TOKEN_TITLE})
   }
 
   /**
-   * @return {Promise.<void>}
+   * @return {Promise<ShopifyAccessTokenObject[]>}
    */
   async getStorefrontAccessTokens () {
     return this.storefrontAccessToken.list()
