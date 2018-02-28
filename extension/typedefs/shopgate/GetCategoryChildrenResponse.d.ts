@@ -1,4 +1,4 @@
-interface CategoryChildren {
+interface CategoryChild {
   id: string
   name: string
   productCount: number
@@ -7,5 +7,5 @@ interface CategoryChildren {
 }
 
 interface GetCategoryChildrenResponse {
-  categories: CategoryChildren[]
+  categories: CategoryChild[]
 }
