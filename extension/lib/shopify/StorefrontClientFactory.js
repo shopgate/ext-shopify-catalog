@@ -16,7 +16,7 @@ class StoreFrontApiFactory {
   }
 
   /**
-   * @returns GraphQlClient
+   * @returns ShopifyStorefrontClient
    */
   create () {
     return new GraphQlClient(types, {

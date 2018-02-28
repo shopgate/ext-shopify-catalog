@@ -20,13 +20,6 @@ class ShopifyCollectionCommandFactory {
   /**
    * @returns {ShopifyCollectionRepositoryCommandChildrenGetCount}
    */
-  createGetChildrenCount () {
-
-  }
-
-  /**
-   * @returns {ShopifyCollectionRepositoryCommandChildrenGetCount}
-   */
   createGetProductCount () {
 
   }
