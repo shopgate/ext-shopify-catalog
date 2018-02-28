@@ -27,7 +27,21 @@ class ShopifyCollectionRepository {
    * @returns {Promise<ShopifyCollection[]>}
    */
   async list () {
+    const regExp = new RegExp(/([0-9])\w+/)
+    const rawCollections = await this._shopifyCollectionCommandFactory.createList().execute()
 
+    const productCountPromises = rawCollections.map(collection => {
+      const id = regExp.exec(Buffer.from(collection.id.toString(), 'base64').toString())[0]
+
+      return this._shopifyCollectionCommandFactory.createGetProductCount().execute(id)
+    })
+
+    const collectionCategoryCounts = await Promise.all(productCountPromises)
+    const shopifyCollections = []
+    for (let countIndex in rawCollections) {
+      shopifyCollections.push(new ShopifyCollection(rawCollections[countIndex].id, rawCollections[countIndex].handle, rawCollections[countIndex].title, 0, collectionCategoryCounts[countIndex], rawCollections[countIndex].image))
+    }
+    return shopifyCollections
   }
 
   /**
@@ -36,7 +50,7 @@ class ShopifyCollectionRepository {
    * @returns {ShopifyCollectionCommandFactory}
    */
   static create (storefrontClient, adminClient) {
-    return new ShopifyCollectionRepositoryCommandFactory(storefrontClient, adminClient)
+    return new ShopifyCollectionRepository(new ShopifyCollectionRepositoryCommandFactory(storefrontClient, adminClient))
   }
 }
 
