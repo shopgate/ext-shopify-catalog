@@ -30,6 +30,11 @@ class ShopifyCollectionRepository {
 
   }
 
+  /**
+   * @param {ShopifyStorefrontClient} storefrontClient
+   * @param {ShopifyAdminClient} adminClient
+   * @returns {ShopifyCollectionCommandFactory}
+   */
   static create (storefrontClient, adminClient) {
     return new ShopifyCollectionRepositoryCommandFactory(storefrontClient, adminClient)
   }
