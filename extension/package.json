@@ -45,6 +45,7 @@
     "eslint-plugin-standard": "^3.0.1",
     "graphql-js-schema": "^0.7.1",
     "graphql-js-schema-fetch": "^1.1.2",
+    "graphql-to-js-client-builder": "^1.0.0",
     "husky": "^0.14.3",
     "lint-staged": "^6.0.0",
     "mocha": "^3.2.0",
