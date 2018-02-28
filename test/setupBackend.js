@@ -20,6 +20,7 @@ const integrationTestCredentialFile = path.dirname(__dirname) + '/.integration-c
 fs.writeFile(integrationTestCredentialFile, 'module.exports = {\n' +
   '  shopName: \'***\',\n' +
   '  accessToken: \'***\'\n' +
+  '  storefrontAccessToken: \'***\'\n' +
   '}', {flag: 'wx'}, errorCallback)
 
 Module._initPaths()

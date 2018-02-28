@@ -10,13 +10,22 @@ class ShopgateCategoryExtensionPipeline {
     this._shopifyCollectionRepository = shopifyCollectionRepository
   }
 
+  /**
+   * @param {string} id
+   * @returns {Promise<GetCategoryResponse>}
+   */
   async getCategory (id) {
-    // const shopifyCollection = await this._shopifyCollectionRepository.get(id)
-    //
-    // // TODO map to the getCategory response specification
-    // return {
-    //
-    // }
+    const shopifyCollection = await this._shopifyCollectionRepository.get(id)
+
+    return {
+      id: shopifyCollection.handle,
+      name: shopifyCollection.title,
+      productCount: shopifyCollection.productCount,
+      imageUrl: shopifyCollection.image,
+      childrenCount: shopifyCollection.childrenCount,
+      parent: null,
+      children: []
+    }
   }
 
   async getRootCategories () {

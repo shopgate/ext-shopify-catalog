@@ -1,4 +1,4 @@
-const shopifyCollectionRepositoryCommandGetGraphQL = require('./command/GetGraphQL')
+const shopifyCollectionRepositoryCommandGetGraphQL = require('./command/GetGraphQl')
 
 class ShopifyCollectionCommandFactory {
   /**
