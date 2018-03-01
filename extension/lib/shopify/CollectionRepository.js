@@ -27,13 +27,10 @@ class ShopifyCollectionRepository {
    * @returns {Promise<ShopifyCollection[]>}
    */
   async list () {
-    const regExp = new RegExp(/([0-9])\w+/)
     const rawCollections = await this._shopifyCollectionCommandFactory.createList().execute()
 
     const productCountPromises = rawCollections.map(collection => {
-      const id = regExp.exec(Buffer.from(collection.id.toString(), 'base64').toString())[0]
-
-      return this._shopifyCollectionCommandFactory.createGetProductCount().execute(id)
+      return this._shopifyCollectionCommandFactory.createGetProductCount().execute(collection.id)
     })
 
     const collectionCategoryCounts = await Promise.all(productCountPromises)

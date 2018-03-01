@@ -14,7 +14,7 @@ class ShopifyCollectionRepositoryCommandListGraphQL {
    * @returns {Promise<ShopifyCollectionRepositoryCommandGetOutput[]>}
    */
   async execute () {
-    console.log('doing execute in listGraphQl')
+    const regExp = new RegExp(/([0-9])\w+/)
     const query = this._storefrontClient.query((root) => {
       root.add('shop', shop => {
         shop.add('collections', {
@@ -40,24 +40,20 @@ class ShopifyCollectionRepositoryCommandListGraphQL {
         })
       })
     })
-
-    try {
-      const response = await this._storefrontClient.send(query)
-      return response.data.shop.collections.edges.map(edge => {
-        let image = null
-        if (edge.node.image && edge.node.image.originalSrc) {
-          image = edge.node.image.originalSrc
-        }
-        return {
-          id: edge.node.id,
-          title: edge.node.title,
-          handle: edge.node.handle,
-          image: image
-        }
-      })
-    } catch (err) {
-      console.log(err)
-    }
+    // todo figure out how to get paginated results
+    const response = await this._storefrontClient.send(query)
+    return response.data.shop.collections.edges.map(edge => {
+      let image = null
+      if (edge.node.image && edge.node.image.originalSrc) {
+        image = edge.node.image.originalSrc
+      }
+      return {
+        id: regExp.exec(Buffer.from(edge.node.id.toString(), 'base64').toString())[0],
+        title: edge.node.title,
+        handle: edge.node.handle,
+        image: image
+      }
+    })
   }
 }
 
