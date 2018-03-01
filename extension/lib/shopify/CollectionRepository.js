@@ -3,7 +3,7 @@ const ShopifyCollectionRepositoryCommandFactory = require('./collection-reposito
 
 class ShopifyCollectionRepository {
   /**
-   * @param {ShopifyCollectionCommandFactory} shopifyCollectionCommandFactory
+   * @param {ShopifyCollectionRepositoryCommandFactory} shopifyCollectionCommandFactory
    */
   constructor (shopifyCollectionCommandFactory) {
     this._shopifyCollectionCommandFactory = shopifyCollectionCommandFactory
@@ -33,10 +33,10 @@ class ShopifyCollectionRepository {
   /**
    * @param {ShopifyStorefrontClient} storefrontClient
    * @param {ShopifyAdminClient} adminClient
-   * @returns {ShopifyCollectionCommandFactory}
+   * @returns {ShopifyCollectionRepository}
    */
   static create (storefrontClient, adminClient) {
-    return new ShopifyCollectionRepositoryCommandFactory(storefrontClient, adminClient)
+    return new ShopifyCollectionRepository(new ShopifyCollectionRepositoryCommandFactory(storefrontClient, adminClient))
   }
 }
 
