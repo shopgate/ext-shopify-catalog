@@ -1,5 +1,5 @@
 const shopifyCollectionRepositoryCommandGetGraphQL = require('./command/GetGraphQL')
-const shopifyCollectionRepositoryCommandListGraphQL = require('./command/ListGraphQL')
+const shopifyCollectionRepositoryCommandListGraphQL = require('./command/ListGraphQl')
 const shopifyCollectionRepositoryCommandChildrenGetCount = require('./command/GetProductCountAdmin')
 
 class ShopifyCollectionCommandFactory {
