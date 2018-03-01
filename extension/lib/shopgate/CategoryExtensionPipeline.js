@@ -26,7 +26,7 @@ class ShopgateCategoryExtensionPipeline {
     const shopifyCollections = await this._shopifyCollectionRepository.list()
     return shopifyCollections.map(shopifyCollection => {
       return {
-        id: shopifyCollection.handle,
+        id: shopifyCollection.id + '/' + shopifyCollection.handle,
         name: shopifyCollection.title,
         productCount: shopifyCollection.productCount,
         imageUrl: shopifyCollection.image,
