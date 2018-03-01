@@ -3,10 +3,10 @@
  */
 class ShopifyCollectionRepositoryCommandGetGraphQl {
   /**
-   * @param {ShopifyStorefrontClient} client
+   * @param {ShopifyStorefrontClient} storefrontClient
    */
-  constructor (client) {
-    this._client = client
+  constructor (storefrontClient) {
+    this._storefrontClient = storefrontClient
   }
 
   /**
@@ -15,7 +15,7 @@ class ShopifyCollectionRepositoryCommandGetGraphQl {
    * @returns {Promise<ShopifyCollectionRepositoryCommandGetOutput>}
    */
   async execute (handle) {
-    const query = this._client.query((root) => {
+    const query = this._storefrontClient.query((root) => {
       root.add('shop', shop => {
         shop.add('collectionByHandle', {
           args: {
@@ -34,10 +34,10 @@ class ShopifyCollectionRepositoryCommandGetGraphQl {
     })
 
     try {
-      const response = await this._client.send(query)
+      const response = await this._storefrontClient.send(query)
 
       return {
-        id: response.data.shop.collectionByHandle.id,
+        id: Buffer.from(response.data.shop.collectionByHandle.id, 'base64').toString().split('/').pop(),
         handle: response.data.shop.collectionByHandle.handle,
         title: response.data.shop.collectionByHandle.title,
         image: response.data.shop.collectionByHandle.image.originalSrc

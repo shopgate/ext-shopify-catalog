@@ -11,8 +11,8 @@ class ShopifyAdminClient extends ShopifyClient {
   }
 
   /**
-   * @param {string} id
-   * @return {Promise<void>}
+   * @param {number} id
+   * @return {Promise<number>}
    */
   async getProductCountByCollectionId (id) {
     return this.product.count({collection_id: id})

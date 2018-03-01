@@ -1,3 +1,3 @@
 interface ShopifyCollectionRepositoryCommandProductGetCount {
-  execute (id : string) : Promise<number>
+  execute (id : number) : Promise<number>
 }

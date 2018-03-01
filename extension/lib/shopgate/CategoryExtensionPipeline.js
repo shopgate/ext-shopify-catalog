@@ -11,14 +11,15 @@ class ShopgateCategoryExtensionPipeline {
   }
 
   /**
-   * @param {string} id
+   * @param {string} combinedId
    * @returns {Promise<GetCategoryResponse>}
    */
-  async getCategory (id) {
-    const shopifyCollection = await this._shopifyCollectionRepository.get(id)
+  async getCategory (combinedId) {
+    const { id, handle } = combinedId.split('/')
+    const shopifyCollection = await this._shopifyCollectionRepository.get(parseInt(id), handle)
 
     return {
-      id: shopifyCollection.handle,
+      id: shopifyCollection.id + '/' + shopifyCollection.handle,
       name: shopifyCollection.title,
       productCount: shopifyCollection.productCount,
       imageUrl: shopifyCollection.image,

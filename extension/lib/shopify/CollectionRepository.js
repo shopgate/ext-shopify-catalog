@@ -10,17 +10,17 @@ class ShopifyCollectionRepository {
   }
 
   /**
-   * @param {string} collectionId
+   * @param {number} collectionId
    * @param {string} handle
    * @returns {Promise<ShopifyCollection>}
    */
   async get (collectionId, handle) {
     const getCollection = this._shopifyCollectionCommandFactory.createGet().execute(handle)
-    const getProductCount = this._shopifyCollectionCommandFactory.createGetProductCount().execute(handle)
+    const getProductCount = this._shopifyCollectionCommandFactory.createGetProductCount().execute(collectionId)
 
     const [collection, productCount] = await Promise.all([getCollection, getProductCount])
 
-    return new ShopifyCollection(collection.id, collection.title, 0, productCount, collection.image, [])
+    return new ShopifyCollection(collection.id, collection.handle, collection.title, 0, productCount, collection.image, [])
   }
 
   /**
