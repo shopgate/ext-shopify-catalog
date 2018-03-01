@@ -4,7 +4,7 @@ const ListGraphQl = require('../../../../../../../extension/lib/shopify/collecti
 const integrationCredentials = require('../../../../../../../.integration-credentials')
 
 describe('ListGraphQl Command', () => {
-  it('should return data', async () => {
+  it('should return shopify categories', async () => {
     const testHandle = 'integration-test-do-no-touch'
     const storeFrontApiFactory = new StoreFrontApiFactory(integrationCredentials.storefrontAccessToken, integrationCredentials.shopName)
 
