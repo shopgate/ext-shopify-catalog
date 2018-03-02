@@ -1,4 +1,4 @@
-const DEFAULT_NUM_PER_PAGE = 1
+const DEFAULT_NUM_PER_PAGE = 250
 
 class ShopifyCollectionRepositoryCommandListGraphQl {
   /**
@@ -65,7 +65,6 @@ class ShopifyCollectionRepositoryCommandListGraphQl {
     const response = await this._storefrontClient.send(query)
     const collections = response.data.shop.collections.edges
     if (response.data.shop && response.data.shop.collections && response.data.shop.collections.pageInfo.hasNextPage === true) {
-      console.log('doing iteration')
       const lastCursor = collections[collections.length - 1].cursor
       Array.prototype.push.apply(collections, await this._makePaginatedRequests(lastCursor))
     }
