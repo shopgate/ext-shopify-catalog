@@ -33,17 +33,13 @@ class ShopifyCollectionRepositoryCommandGetGraphQl {
       })
     })
 
-    try {
-      const response = await this._storefrontClient.send(query)
+    const response = await this._storefrontClient.send(query)
 
-      return {
-        id: Buffer.from(response.data.shop.collectionByHandle.id, 'base64').toString().split('/').pop(),
-        handle: response.data.shop.collectionByHandle.handle,
-        title: response.data.shop.collectionByHandle.title,
-        image: response.data.shop.collectionByHandle.image.originalSrc
-      }
-    } catch (err) {
-      console.log(err)
+    return {
+      id: Buffer.from(response.data.shop.collectionByHandle.id, 'base64').toString().split('/').pop(),
+      handle: response.data.shop.collectionByHandle.handle,
+      title: response.data.shop.collectionByHandle.title,
+      image: response.data.shop.collectionByHandle.image.originalSrc
     }
   }
 }

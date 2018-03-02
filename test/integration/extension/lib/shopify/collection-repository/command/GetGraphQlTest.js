@@ -4,7 +4,7 @@ const GetGraphQL = require('../../../../../../../extension/lib/shopify/collectio
 const integrationCredentials = require('../../../../../../../.integration-credentials')
 
 describe('GetGraphQl Command', () => {
-  it('should return data', async () => {
+  it('should return collection data', async () => {
     const storeFrontApiFactory = new StoreFrontApiFactory(integrationCredentials.storefrontAccessToken, integrationCredentials.shopName)
 
     const shopifyStorefrontClient = storeFrontApiFactory.create()
