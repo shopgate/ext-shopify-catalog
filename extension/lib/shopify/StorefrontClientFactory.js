@@ -1,9 +1,6 @@
-const GraphQlClient = require('graphql-js-client').default
-const fetch = require('node-fetch')
-const types = require('./GraphQlTypes').default
 
-// package 'graphql-js-client' tries to access a global method named 'fetch'
-global.fetch = fetch
+const { clientFactory } = require('./StorefrontClient')
+
 
 class StoreFrontApiFactory {
   /**
@@ -16,17 +13,10 @@ class StoreFrontApiFactory {
   }
 
   /**
-   * @returns ShopifyStorefrontClient
+   * @returns {ShopifyStorefrontClient}
    */
   create () {
-    return new GraphQlClient(types, {
-      url: 'https://' + this._shopName + '.myshopify.com/api/graphql',
-      fetcherOptions: {
-        headers: {
-          'X-Shopify-Storefront-Access-Token': this._shopifyStorefrontAccessToken
-        }
-      }
-    })
+    return clientFactory(this._shopifyStorefrontAccessToken, this._shopName)
   }
 }
 
