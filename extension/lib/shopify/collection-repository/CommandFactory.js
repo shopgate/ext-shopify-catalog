@@ -1,6 +1,6 @@
 const shopifyCollectionRepositoryCommandGetGraphQL = require('./command/GetGraphQL')
 
-class ShopifyCollectionCommandFactory {
+class ShopifyCollectionRepositoryCommandFactory {
   /**
    * @param {ShopifyStorefrontClient} storefrontClient
    * @param {ShopifyAdminClient} adminClient
@@ -20,16 +20,9 @@ class ShopifyCollectionCommandFactory {
   /**
    * @returns {ShopifyCollectionRepositoryCommandChildrenGetCount}
    */
-  createGetChildrenCount () {
-
-  }
-
-  /**
-   * @returns {ShopifyCollectionRepositoryCommandChildrenGetCount}
-   */
   createGetProductCount () {
 
   }
 }
 
-module.exports = ShopifyCollectionCommandFactory
+module.exports = ShopifyCollectionRepositoryCommandFactory
