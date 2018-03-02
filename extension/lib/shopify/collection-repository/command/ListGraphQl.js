@@ -1,48 +1,21 @@
-// const query = require('./Get-GraphQL-query')
+const DEFAULT_NUM_PER_PAGE = 1
 
-class ShopifyCollectionRepositoryCommandListGraphQL {
+class ShopifyCollectionRepositoryCommandListGraphQl {
   /**
-   * @param {ShopifyStorefrontClient} client
+   * @param {ShopifyStorefrontClient} storefrontClient
    */
-  constructor (client) {
-    this._storefrontClient = client
+  constructor (storefrontClient) {
+    this._storefrontClient = storefrontClient
+    this._numberPerPage = DEFAULT_NUM_PER_PAGE
   }
 
   /**
-   *
-   * @param {string} id
    * @returns {Promise<ShopifyCollectionRepositoryCommandGetOutput[]>}
    */
   async execute () {
     const regExp = new RegExp(/([0-9])\w+/)
-    const query = this._storefrontClient.query((root) => {
-      root.add('shop', shop => {
-        shop.add('collections', {
-          args: {
-            first: 250
-          }
-        }, collections => {
-          collections.add('edges', edges => {
-            edges.add('node', node => {
-              node.add('id')
-              node.add('title')
-              node.add('handle')
-              node.add('image', image => {
-                image.add('originalSrc')
-                image.add('transformedSrc')
-              })
-            })
-          })
-          collections.add('pageInfo', pageInfo => {
-            pageInfo.add('hasNextPage')
-            pageInfo.add('hasPreviousPage')
-          })
-        })
-      })
-    })
-    // todo figure out how to get paginated results
-    const response = await this._storefrontClient.send(query)
-    return response.data.shop.collections.edges.map(edge => {
+    const collectionsEdges = await this._makePaginatedRequests()
+    return collectionsEdges.map(edge => {
       let image = null
       if (edge.node.image && edge.node.image.originalSrc) {
         image = edge.node.image.originalSrc
@@ -55,12 +28,63 @@ class ShopifyCollectionRepositoryCommandListGraphQL {
       }
     })
   }
+
+  /**
+   * @param {string?} cursor
+   * @return {Promise<Object[]>}
+   * @private
+   */
+  async _makePaginatedRequests (cursor) {
+    let collectionsArguments = {first: this._numberPerPage}
+    if (cursor) {
+      collectionsArguments.after = cursor
+    }
+    const query = this._storefrontClient.query((root) => {
+      root.add('shop', shop => {
+        shop.add('collections', {
+          args: collectionsArguments
+        }, collections => {
+          collections.add('edges', edges => {
+            edges.add('cursor')
+            edges.add('node', node => {
+              node.add('id')
+              node.add('title')
+              node.add('handle')
+              node.add('image', image => {
+                image.add('originalSrc')
+              })
+            })
+          })
+          collections.add('pageInfo', pageInfo => {
+            pageInfo.add('hasNextPage')
+            pageInfo.add('hasPreviousPage')
+          })
+        })
+      })
+    })
+    const response = await this._storefrontClient.send(query)
+    const collections = response.data.shop.collections.edges
+    if (response.data.shop && response.data.shop.collections && response.data.shop.collections.pageInfo.hasNextPage === true) {
+      console.log('doing iteration')
+      const lastCursor = collections[collections.length - 1].cursor
+      Array.prototype.push.apply(collections, await this._makePaginatedRequests(lastCursor))
+    }
+
+    return collections
+  }
+
+  /**
+   * @param {number} number
+   */
+  set numberPerPage (number) {
+    this._numberPerPage = number
+  }
 }
 
 /**
  * @param {ShopifyStorefrontClient} client
- * @returns {ShopifyCollectionRepositoryCommandListGraphQL}
+ * @returns {ShopifyCollectionRepositoryCommandListGraphQl}
  */
 module.exports = function (client) {
-  return /** @type {ShopifyCollectionRepositoryCommandListGraphQL} */new ShopifyCollectionRepositoryCommandListGraphQL(client)
+  return new ShopifyCollectionRepositoryCommandListGraphQl(client)
 }

@@ -34,11 +34,10 @@ class ShopifyCollectionRepository {
     })
 
     const collectionCategoryCounts = await Promise.all(productCountPromises)
-    const shopifyCollections = []
-    for (let countIndex in rawCollections) {
-      shopifyCollections.push(new ShopifyCollection(rawCollections[countIndex].id, rawCollections[countIndex].handle, rawCollections[countIndex].title, 0, collectionCategoryCounts[countIndex], rawCollections[countIndex].image))
-    }
-    return shopifyCollections
+
+    return rawCollections.map((rawCollection, index) => {
+      return new ShopifyCollection(rawCollection.id, rawCollection.handle, rawCollection.title, 0, collectionCategoryCounts[index], rawCollection.image)
+    })
   }
 
   /**
