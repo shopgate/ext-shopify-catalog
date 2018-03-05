@@ -36,7 +36,7 @@ class ShopifyCollectionRepositoryCommandGetGraphQl {
     const response = await this._storefrontClient.send(query)
 
     return {
-      id: Buffer.from(response.data.shop.collectionByHandle.id, 'base64').toString().split('/').pop(),
+      id: parseInt(Buffer.from(response.data.shop.collectionByHandle.id, 'base64').toString().split('/').pop()),
       handle: response.data.shop.collectionByHandle.handle,
       title: response.data.shop.collectionByHandle.title,
       image: response.data.shop.collectionByHandle.image ? response.data.shop.collectionByHandle.image.originalSrc : ''

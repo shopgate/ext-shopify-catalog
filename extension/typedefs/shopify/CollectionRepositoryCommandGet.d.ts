@@ -1,5 +1,5 @@
 interface ShopifyCollectionRepositoryCommandGetOutput {
-  id: string
+  id: number
   title: string
   handle: string
   image: string
