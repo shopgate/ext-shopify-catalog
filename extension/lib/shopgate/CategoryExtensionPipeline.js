@@ -24,7 +24,7 @@ class ShopgateCategoryExtensionPipeline {
    */
   async getRootCategories () {
     const shopifyCollections = await this._shopifyCollectionRepository.list()
-    return shopifyCollections.map(shopifyCollection => {
+    const rootCategories = shopifyCollections.map(shopifyCollection => {
       return {
         id: shopifyCollection.id + '/' + shopifyCollection.handle,
         name: shopifyCollection.title,
@@ -34,6 +34,7 @@ class ShopgateCategoryExtensionPipeline {
         children: []
       }
     })
+    return {categories: rootCategories}
   }
 
   /**

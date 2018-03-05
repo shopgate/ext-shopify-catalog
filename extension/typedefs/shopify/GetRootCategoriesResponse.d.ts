@@ -6,7 +6,7 @@ interface CategoryChild {
     childrenCount: number
 }
 
-interface GetRootCategoriesResponse {
+interface RootCategory {
     id: string
     name: string
     productCount: number
@@ -14,3 +14,8 @@ interface GetRootCategoriesResponse {
     childrenCount: number
     children?: CategoryChild[]
 }
+
+interface GetRootCategoriesResponse {
+    categories: RootCategory[]
+}
+
