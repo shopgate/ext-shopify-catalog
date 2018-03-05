@@ -15,7 +15,7 @@ class ShopgateCategoryExtensionPipeline {
    * @returns {Promise<GetCategoryResponse>}
    */
   async getCategory (combinedId) {
-    const { id, handle } = combinedId.split('/')
+    const [ id, handle ] = combinedId.split('/')
     const shopifyCollection = await this._shopifyCollectionRepository.get(parseInt(id), handle)
 
     return {
@@ -41,7 +41,7 @@ class ShopgateCategoryExtensionPipeline {
    */
   static create (context) {
     const shopifyAdminFactory = new ShopifyAdminClientFactory(context.config.shopifyAccessToken, context.config.shopifyShopAlias)
-    const shopifyStorefrontFactory = new ShopifyStorefrontClientFactory()
+    const shopifyStorefrontFactory = new ShopifyStorefrontClientFactory('todo', context.config.shopifyShopAlias)
 
     // todo inject the dependencies - storefront and admin client
     const shopifyCollectionRepository = ShopifyCollectionRepository.create(
