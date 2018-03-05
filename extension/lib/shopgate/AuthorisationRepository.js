@@ -14,7 +14,7 @@ class AuthorisationRepository {
     this._shopifyAdminClient = shopifyAdminClient
   }
 
-  async getShopifyStorefrontToken () {
+  async acquireShopifyStorefrontToken () {
     let accessToken = await this._pipelineStorage.get(STOREFRONT_AUTH_TOKEN)
     if (!accessToken) {
       accessToken = await this._shopifyAdminClient.createStorefrontAccessToken()

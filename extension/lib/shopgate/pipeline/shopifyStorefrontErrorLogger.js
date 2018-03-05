@@ -1,5 +1,5 @@
-const {isAccessForbidden, isServerError, isRequestFailedError} = require('../shopify/StorefrontClient')
-const ShopgateAuthorisationRepository = require('./AuthorisationRepository')
+const {isAccessForbidden, isServerError, isRequestFailedError} = require('../../shopify/StorefrontClient')
+
 
 /**
  * @param {ShopifyStorefrontClientAccessForbiddenError} err
@@ -14,7 +14,7 @@ function logAccessForbidden (err, logger) {
 
 /**
  * @param {ShopifyStorefrontClientRequestFailedError} err
- * @param {PipelineContext} context
+ * @param {PipelineLogger} context
  */
 function logRequestFailed (err, logger) {
   logger.error({
@@ -41,20 +41,11 @@ function logServerError (err, logger) {
 /**
  * @param {Error} err
  * @param {PipelineContext} context
- * @returns {boolean} handled
+ * @returns {boolean} Returns true if error was logged false otherwise.
  */
 module.exports = function (err, context) {
   if (isAccessForbidden(err)) {
     logAccessForbidden(/** @type {ShopifyStorefrontClientAccessForbiddenError} */err, context.log)
-    ShopgateAuthorisationRepository.create(context)
-      .releaseShopifyStorefrontToken()
-      .catch((err) => {
-        context.log.error({
-          msg: 'Error releasing no longer valid token.',
-          error: err.message,
-          stack: err.stack
-        })
-    })
     return true
   }
 
