@@ -3,10 +3,11 @@ const DEFAULT_NUM_PER_PAGE = 250
 class ShopifyCollectionRepositoryCommandListGraphQl {
   /**
    * @param {ShopifyStorefrontClient} storefrontClient
+   * @param {number?} numberPerPage
    */
-  constructor (storefrontClient) {
+  constructor (storefrontClient, numberPerPage = DEFAULT_NUM_PER_PAGE) {
     this._storefrontClient = storefrontClient
-    this._numberPerPage = DEFAULT_NUM_PER_PAGE
+    this._numberPerPage = numberPerPage
   }
 
   /**
@@ -14,12 +15,14 @@ class ShopifyCollectionRepositoryCommandListGraphQl {
    */
   async execute () {
     const regExp = new RegExp(/([0-9])\w+/)
-    const collectionsEdges = await this._makePaginatedRequests()
+    const collectionsEdges = await this._fetchCollections()
     return collectionsEdges.map(edge => {
       let image = null
+
       if (edge.node.image && edge.node.image.originalSrc) {
         image = edge.node.image.originalSrc
       }
+
       return {
         id: regExp.exec(Buffer.from(edge.node.id.toString(), 'base64').toString())[0],
         title: edge.node.title,
@@ -34,11 +37,13 @@ class ShopifyCollectionRepositoryCommandListGraphQl {
    * @return {Promise<Object[]>}
    * @private
    */
-  async _makePaginatedRequests (cursor) {
+  async _fetchCollections (cursor) {
     let collectionsArguments = {first: this._numberPerPage}
+
     if (cursor) {
       collectionsArguments.after = cursor
     }
+
     const query = this._storefrontClient.query((root) => {
       root.add('shop', shop => {
         shop.add('collections', {
@@ -62,28 +67,24 @@ class ShopifyCollectionRepositoryCommandListGraphQl {
         })
       })
     })
+
     const response = await this._storefrontClient.send(query)
     const collections = response.data.shop.collections.edges
+
     if (response.data.shop && response.data.shop.collections && response.data.shop.collections.pageInfo.hasNextPage === true) {
       const lastCursor = collections[collections.length - 1].cursor
-      Array.prototype.push.apply(collections, await this._makePaginatedRequests(lastCursor))
+      Array.prototype.push.apply(collections, await this._fetchCollections(lastCursor))
     }
 
     return collections
-  }
-
-  /**
-   * @param {number} number
-   */
-  set numberPerPage (number) {
-    this._numberPerPage = number
   }
 }
 
 /**
  * @param {ShopifyStorefrontClient} client
+ * @param {number?} numberPerPage
  * @returns {ShopifyCollectionRepositoryCommandListGraphQl}
  */
-module.exports = function (client) {
-  return new ShopifyCollectionRepositoryCommandListGraphQl(client)
+module.exports = function (client, numberPerPage) {
+  return new ShopifyCollectionRepositoryCommandListGraphQl(client, numberPerPage)
 }

@@ -1,9 +1,8 @@
-import {ShopifyProductImagesImage} from "shopify-api-node-interface/shopify-api-node-interface";
 interface ShopifyCollectionRepositoryCommandGetOutput {
-    id : string
-    title : string
-    handle: string
-    image: string
+  id: string
+  title: string
+  handle: string
+  image: string
 }
 
 interface ShopifyCollectionRepositoryCommandGet {
