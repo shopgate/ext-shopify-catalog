@@ -7,12 +7,18 @@ class ShopifyCollectionRepositoryCommandProductGetCountAdminApi {
   }
 
   /**
-   * @param {number} id Collection id
-   * @returns {Promise<number>}
+   * @param {string} id
+   * @returns {Promise<ShopifyCollectionRepositoryCommandProductGetCountAdminApi>}
    */
   async execute (id) {
-    return this._adminClient.getProductCountByCollectionId(id)
+    return this._adminClient.product.count({collection_id: id})
   }
 }
 
-module.exports = ShopifyCollectionRepositoryCommandProductGetCountAdminApi
+/**
+ * @param {ShopifyAdminClient} adminClient
+ * @returns {ShopifyCollectionRepositoryCommandProductGetCountAdminApi}
+ */
+module.exports = function (adminClient) {
+  return new ShopifyCollectionRepositoryCommandProductGetCountAdminApi(adminClient)
+}

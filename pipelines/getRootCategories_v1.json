@@ -1,0 +1,28 @@
+{
+  "version": "1",
+  "pipeline": {
+    "id": "getRootCategories_v1",
+    "input": [],
+    "steps": [
+      {
+        "id": "@shopgate/shopify-catalog",
+        "path": "@shopgate/shopify-catalog/lib/getRootCategories.js",
+        "type": "extension",
+        "input": [],
+        "output": [
+          {
+            "id": "1000",
+            "key": "categories"
+          }
+        ]
+      }
+    ],
+    "output": [
+      {
+        "id": "1000",
+        "key": "categories"
+      }
+    ],
+    "public": true
+  }
+}
