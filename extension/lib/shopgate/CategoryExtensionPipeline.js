@@ -19,10 +19,22 @@ class ShopgateCategoryExtensionPipeline {
     // }
   }
 
+  /**
+   * @return {Promise<GetRootCategoriesResponse>}
+   */
   async getRootCategories () {
-    return (await this._shopifyCollectionRepository.list()).map((shopifyCollection) => {
-      // TODO map to the getRootCategories response specification
+    const shopifyCollections = await this._shopifyCollectionRepository.list()
+    const rootCategories = shopifyCollections.map(shopifyCollection => {
+      return {
+        id: shopifyCollection.id + '/' + shopifyCollection.handle,
+        name: shopifyCollection.title,
+        productCount: shopifyCollection.productCount,
+        imageUrl: shopifyCollection.image,
+        childrenCount: shopifyCollection.childrenCount,
+        children: []
+      }
     })
+    return {categories: rootCategories}
   }
 
   /**

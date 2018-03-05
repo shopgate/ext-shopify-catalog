@@ -1,4 +1,5 @@
-const shopifyCollectionRepositoryCommandGetGraphQL = require('./command/GetGraphQL')
+const shopifyCollectionRepositoryCommandListGraphQl = require('./command/ListGraphQl')
+const shopifyCollectionRepositoryCommandProductGetCountAdminApi = require('./command/product/GetCountAdminApi')
 
 class ShopifyCollectionRepositoryCommandFactory {
   /**
@@ -14,14 +15,21 @@ class ShopifyCollectionRepositoryCommandFactory {
    * @returns {ShopifyCollectionRepositoryCommandGet}
    */
   createGet () {
-    return shopifyCollectionRepositoryCommandGetGraphQL(this._storefrontClient)
+
   }
 
   /**
-   * @returns {ShopifyCollectionRepositoryCommandChildrenGetCount}
+   * @return {ShopifyCollectionRepositoryCommandListGraphQl}
+   */
+  createList () {
+    return shopifyCollectionRepositoryCommandListGraphQl(this._storefrontClient)
+  }
+
+  /**
+   * @returns {ShopifyCollectionRepositoryCommandProductGetCountAdminApi}
    */
   createGetProductCount () {
-
+    return shopifyCollectionRepositoryCommandProductGetCountAdminApi(this._adminClient)
   }
 }
 

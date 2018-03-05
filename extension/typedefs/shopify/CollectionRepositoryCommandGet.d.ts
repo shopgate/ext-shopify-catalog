@@ -1,6 +1,8 @@
 interface ShopifyCollectionRepositoryCommandGetOutput {
-    id : string
-    title : string
+  id: string
+  title: string
+  handle: string
+  image: string
 }
 
 interface ShopifyCollectionRepositoryCommandGet {

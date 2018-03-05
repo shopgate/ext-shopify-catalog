@@ -27,7 +27,17 @@ class ShopifyCollectionRepository {
    * @returns {Promise<ShopifyCollection[]>}
    */
   async list () {
+    const rawCollections = await this._shopifyCollectionCommandFactory.createList().execute()
 
+    const productCountPromises = rawCollections.map(collection => {
+      return this._shopifyCollectionCommandFactory.createGetProductCount().execute(collection.id)
+    })
+
+    const collectionCategoryCounts = await Promise.all(productCountPromises)
+
+    return rawCollections.map((rawCollection, index) => {
+      return new ShopifyCollection(rawCollection.id, rawCollection.handle, rawCollection.title, 0, collectionCategoryCounts[index], rawCollection.image)
+    })
   }
 
   /**
