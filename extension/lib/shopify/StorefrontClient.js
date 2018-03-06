@@ -35,7 +35,7 @@ function fetcher (url, graphQLParams, shopifyStoreFrontAccessToken) {
       throw new ShopifyStorefrontClientServerError(response.status, url, JSON.stringify(graphQLParams))
     }
 
-    throw ShopifyStorefrontClientRequestFailedError(url, JSON.stringify(graphQLParams))
+    throw new ShopifyStorefrontClientRequestFailedError(url, JSON.stringify(graphQLParams))
   })
 }
 
