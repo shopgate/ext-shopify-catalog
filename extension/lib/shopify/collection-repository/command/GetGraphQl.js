@@ -4,9 +4,11 @@
 class ShopifyCollectionRepositoryCommandGetGraphQl {
   /**
    * @param {ShopifyStorefrontClient} storefrontClient
+   * @param {ShopifyCollectionRepositoryCommandCategoryIdentifierConverter} identifierConverter
    */
-  constructor (storefrontClient) {
+  constructor (storefrontClient, identifierConverter) {
     this._storefrontClient = storefrontClient
+    this._identifierConverter = identifierConverter
   }
 
   /**
@@ -36,7 +38,7 @@ class ShopifyCollectionRepositoryCommandGetGraphQl {
     const response = await this._storefrontClient.send(query)
 
     return {
-      id: parseInt(Buffer.from(response.data.shop.collectionByHandle.id, 'base64').toString().split('/').pop()),
+      id: this._identifierConverter.convert(response.data.shop.collectionByHandle.id),
       handle: response.data.shop.collectionByHandle.handle,
       title: response.data.shop.collectionByHandle.title,
       image: response.data.shop.collectionByHandle.image ? response.data.shop.collectionByHandle.image.originalSrc : ''
@@ -46,8 +48,9 @@ class ShopifyCollectionRepositoryCommandGetGraphQl {
 
 /**
  * @param {ShopifyStorefrontClient} client
+ * @param {ShopifyCollectionRepositoryCommandCategoryIdentifierConverter} identifierConverter
  * @returns {ShopifyCollectionRepositoryCommandGet}
  */
-module.exports = function (client) {
-  return new ShopifyCollectionRepositoryCommandGetGraphQl(client)
+module.exports = function (client, identifierConverter) {
+  return new ShopifyCollectionRepositoryCommandGetGraphQl(client, identifierConverter)
 }
