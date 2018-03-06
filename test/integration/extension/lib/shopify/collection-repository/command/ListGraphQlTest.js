@@ -36,5 +36,5 @@ describe('ListGraphQl Command', () => {
     assert.equal(makePaginatedRequestExperimentalSpy.callCount, controlGroup.length)
     assert.equal(makePaginatedRequestControlSpy.callCount, 1)
     assert.equal(experimentalGroup.length, controlGroup.length)
-  })
+  }).timeout(4000)
 })

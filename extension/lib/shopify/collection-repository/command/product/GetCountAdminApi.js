@@ -7,8 +7,8 @@ class ShopifyCollectionRepositoryCommandProductGetCountAdminApi {
   }
 
   /**
-   * @param {string} id
-   * @returns {Promise<ShopifyCollectionRepositoryCommandProductGetCountAdminApi>}
+   * @param {number} id
+   * @returns {Promise<number>}
    */
   async execute (id) {
     return this._adminClient.product.count({collection_id: id})
