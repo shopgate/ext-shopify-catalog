@@ -10,19 +10,41 @@ class ShopgateCategoryExtensionPipeline {
     this._shopifyCollectionRepository = shopifyCollectionRepository
   }
 
-  async getCategory (id) {
-    // const shopifyCollection = await this._shopifyCollectionRepository.get(id)
-    //
-    // // TODO map to the getCategory response specification
-    // return {
-    //
-    // }
+  /**
+   * @param {string} combinedId
+   * @returns {Promise<GetCategoryResponse>}
+   */
+  async getCategory (combinedId) {
+    const [ id, handle ] = combinedId.split('/')
+    const shopifyCollection = await this._shopifyCollectionRepository.get(parseInt(id), handle)
+
+    return {
+      id: shopifyCollection.id + '/' + shopifyCollection.handle,
+      name: shopifyCollection.title,
+      productCount: shopifyCollection.productCount,
+      imageUrl: shopifyCollection.image,
+      childrenCount: shopifyCollection.childrenCount,
+      parent: null,
+      children: []
+    }
   }
 
+  /**
+   * @return {Promise<GetRootCategoriesResponse>}
+   */
   async getRootCategories () {
-    return (await this._shopifyCollectionRepository.list()).map((shopifyCollection) => {
-      // TODO map to the getRootCategories response specification
+    const shopifyCollections = await this._shopifyCollectionRepository.list()
+    const rootCategories = shopifyCollections.map(shopifyCollection => {
+      return {
+        id: shopifyCollection.id + '/' + shopifyCollection.handle,
+        name: shopifyCollection.title,
+        productCount: shopifyCollection.productCount,
+        imageUrl: shopifyCollection.image,
+        childrenCount: shopifyCollection.childrenCount,
+        children: []
+      }
     })
+    return {categories: rootCategories}
   }
 
   /**
@@ -31,7 +53,7 @@ class ShopgateCategoryExtensionPipeline {
    */
   static create (context) {
     const shopifyAdminFactory = new ShopifyAdminClientFactory(context.config.shopifyAccessToken, context.config.shopifyShopAlias)
-    const shopifyStorefrontFactory = new ShopifyStorefrontClientFactory()
+    const shopifyStorefrontFactory = new ShopifyStorefrontClientFactory('todo', context.config.shopifyShopAlias)
 
     // todo inject the dependencies - storefront and admin client
     const shopifyCollectionRepository = ShopifyCollectionRepository.create(

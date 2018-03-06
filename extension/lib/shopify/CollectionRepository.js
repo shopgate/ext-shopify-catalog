@@ -10,24 +10,34 @@ class ShopifyCollectionRepository {
   }
 
   /**
-   * @param {string} id
+   * @param {number} collectionId
+   * @param {string} handle
    * @returns {Promise<ShopifyCollection>}
    */
-  async get (id) {
-    const getCollection = this._shopifyCollectionCommandFactory.createGet().execute(id)
-    const getChildrenCount = this._shopifyCollectionCommandFactory.createGetChildrenCount().execute(id)
-    const getProductCount = this._shopifyCollectionCommandFactory.createGetProductCount().execute(id)
+  async get (collectionId, handle) {
+    const getCollection = this._shopifyCollectionCommandFactory.createGet().execute(handle)
+    const getProductCount = this._shopifyCollectionCommandFactory.createGetProductCount().execute(collectionId)
 
-    const [collection, childrenCount, productCount] = await Promise.all([getCollection, getChildrenCount, getProductCount])
+    const [collection, productCount] = await Promise.all([getCollection, getProductCount])
 
-    return new ShopifyCollection(collection.id, collection.title, childrenCount, productCount, collection.image)
+    return new ShopifyCollection(collection.id, collection.handle, collection.title, 0, productCount, collection.image, [])
   }
 
   /**
    * @returns {Promise<ShopifyCollection[]>}
    */
   async list () {
+    const rawCollections = await this._shopifyCollectionCommandFactory.createList().execute()
 
+    const productCountPromises = rawCollections.map(collection => {
+      return this._shopifyCollectionCommandFactory.createGetProductCount().execute(collection.id)
+    })
+
+    const collectionCategoryCounts = await Promise.all(productCountPromises)
+
+    return rawCollections.map((rawCollection, index) => {
+      return new ShopifyCollection(rawCollection.id, rawCollection.handle, rawCollection.title, 0, collectionCategoryCounts[index], rawCollection.image)
+    })
   }
 
   /**
