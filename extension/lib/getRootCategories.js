@@ -2,7 +2,7 @@ const ShopgateCategoryRepository = require('./shopgate/CategoryRepository')
 const shopgateErrorHandler = require('./shopgate/errorHandler')
 
 /**
- * @param {GetRootCategoriesContext} context
+ * @param {PipelineContext} context
  * @returns {Promise<GetRootCategoriesResponse>}
  */
 module.exports = async (context) => {

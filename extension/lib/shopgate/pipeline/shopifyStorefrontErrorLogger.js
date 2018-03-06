@@ -1,6 +1,5 @@
 const {isAccessForbidden, isServerError, isRequestFailedError} = require('../../shopify/StorefrontClient')
 
-
 /**
  * @param {ShopifyStorefrontClientAccessForbiddenError} err
  * @param {PipelineLogger} logger
@@ -14,7 +13,7 @@ function logAccessForbidden (err, logger) {
 
 /**
  * @param {ShopifyStorefrontClientRequestFailedError} err
- * @param {PipelineLogger} context
+ * @param {PipelineLogger} logger
  */
 function logRequestFailed (err, logger) {
   logger.error({

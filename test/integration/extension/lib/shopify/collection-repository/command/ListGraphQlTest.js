@@ -1,6 +1,7 @@
 const assert = require('assert')
 const storeFrontApiClient = require('../../../../../../../extension/lib/shopify/StorefrontClient')
 const ListGraphQl = require('../../../../../../../extension/lib/shopify/collection-repository/command/ListGraphQl')
+const IdentifierConverter = require('../../../../../../../extension/lib/shopify/collection-repository/command/category/IdentifierConverter')
 const integrationCredentials = require('../../../../../../../.integration-credentials')
 const sinon = require('sinon')
 
@@ -9,7 +10,7 @@ describe('ListGraphQl Command', () => {
     const testHandle = 'integration-test-do-no-touch'
     const shopifyStorefrontClient = storeFrontApiClient.createClient(integrationCredentials.storefrontAccessToken, integrationCredentials.shopName)
 
-    const listCommand = new ListGraphQl(shopifyStorefrontClient)
+    const listCommand = new ListGraphQl(shopifyStorefrontClient, new IdentifierConverter())
 
     const categories = await listCommand.execute()
     const testCategory = categories.find(category => {
@@ -22,8 +23,8 @@ describe('ListGraphQl Command', () => {
 
   it('should make a paginated request', async () => {
     const shopifyStorefrontClient = storeFrontApiClient.createClient(integrationCredentials.storefrontAccessToken, integrationCredentials.shopName)
-    const listCommandControl = new ListGraphQl(shopifyStorefrontClient)
-    const listCommand = new ListGraphQl(shopifyStorefrontClient, 1)
+    const listCommandControl = new ListGraphQl(shopifyStorefrontClient, new IdentifierConverter())
+    const listCommand = new ListGraphQl(shopifyStorefrontClient, new IdentifierConverter(), 1)
     const makePaginatedRequestExperimentalSpy = sinon.spy(listCommand, '_fetchCollections')
     const makePaginatedRequestControlSpy = sinon.spy(listCommandControl, '_fetchCollections')
     const listCommandControlGroup = listCommandControl.execute()

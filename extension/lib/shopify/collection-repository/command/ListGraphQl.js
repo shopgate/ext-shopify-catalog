@@ -3,10 +3,12 @@ const DEFAULT_NUM_PER_PAGE = 250
 class ShopifyCollectionRepositoryCommandListGraphQl {
   /**
    * @param {ShopifyStorefrontClient} storefrontClient
+   * @param {ShopifyCollectionRepositoryCommandCategoryIdentifierConverter} identifierConverter
    * @param {number?} numberPerPage
    */
-  constructor (storefrontClient, numberPerPage = DEFAULT_NUM_PER_PAGE) {
+  constructor (storefrontClient, identifierConverter, numberPerPage = DEFAULT_NUM_PER_PAGE) {
     this._storefrontClient = storefrontClient
+    this._identifierConverter = identifierConverter
     this._numberPerPage = numberPerPage
   }
 
@@ -14,7 +16,6 @@ class ShopifyCollectionRepositoryCommandListGraphQl {
    * @returns {Promise<ShopifyCollectionRepositoryCommandGetOutput[]>}
    */
   async execute () {
-    const regExp = new RegExp(/([0-9])\w+/)
     const collectionsEdges = await this._fetchCollections()
     return collectionsEdges.map(edge => {
       let image = null
@@ -24,7 +25,7 @@ class ShopifyCollectionRepositoryCommandListGraphQl {
       }
 
       return {
-        id: regExp.exec(Buffer.from(edge.node.id.toString(), 'base64').toString())[0],
+        id: this._identifierConverter.convert(edge.node.id.toString()),
         title: edge.node.title,
         handle: edge.node.handle,
         image: image
@@ -83,8 +84,9 @@ class ShopifyCollectionRepositoryCommandListGraphQl {
 /**
  * @param {ShopifyStorefrontClient} client
  * @param {number?} numberPerPage
+ * @param {ShopifyCollectionRepositoryCommandCategoryIdentifierConverter} identifierConverter
  * @returns {ShopifyCollectionRepositoryCommandListGraphQl}
  */
-module.exports = function (client, numberPerPage) {
-  return new ShopifyCollectionRepositoryCommandListGraphQl(client, numberPerPage)
+module.exports = function (client, identifierConverter, numberPerPage) {
+  return new ShopifyCollectionRepositoryCommandListGraphQl(client, identifierConverter, numberPerPage)
 }
