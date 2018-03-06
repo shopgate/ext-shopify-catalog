@@ -1,4 +1,4 @@
-const ShopgateProductExtensionPipeline = require('./shopgate/ProductExtensionPipeline')
+const ShopgateProductRepository = require('./shopgate/Product')
 const ShopgateProductDefaultValues = require('./shopgate/product/DefaultValues')
 
 /**
@@ -17,10 +17,10 @@ module.exports = async (context, input) => {
     }
   }
 
-  const shopgateProductExtensionPipeline = ShopgateProductExtensionPipeline.create(context)
+  const shopgateProductRepository = ShopgateProductRepository.create(context)
 
   if (getByProductIds) {
-    const products = await shopgateProductExtensionPipeline.getByProductIds(
+    const products = await shopgateProductRepository.getByProductIds(
       input.productIds,
       input.hasOwnProperty('offset') ? input.offset : ShopgateProductDefaultValues.OFFSET,
       input.hasOwnProperty('limit') ? input.limit : ShopgateProductDefaultValues.LIMIT,
@@ -35,8 +35,8 @@ module.exports = async (context, input) => {
   }
 
   if (getByCategoryId) {
-    const products = await shopgateProductExtensionPipeline.getByCategoryId(
-      input.categoryId,
+    const products = await shopgateProductRepository.getByCategoryId(
+      parseInt(input.categoryId),
       input.hasOwnProperty('offset') ? input.offset : ShopgateProductDefaultValues.OFFSET,
       input.hasOwnProperty('limit') ? input.limit : ShopgateProductDefaultValues.LIMIT,
       input.hasOwnProperty('sort') ? input.sort : ShopgateProductDefaultValues.SORT,
