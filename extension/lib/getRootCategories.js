@@ -1,7 +1,7 @@
 const ShopgateCategoryExtensionPipeline = require('./shopgate/CategoryExtensionPipeline')
 
 /**
- * @param {GetRootCategoriesContext} context
+ * @param {PipelineContext} context
  * @returns {Promise<GetRootCategoriesResponse>}
  */
 module.exports = async (context) => {

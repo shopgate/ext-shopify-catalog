@@ -1,11 +1,3 @@
-interface CategoryChild {
-  id: string
-  name: string
-  productCount: number
-  imageUrl: string
-  childrenCount: number
-}
-
 interface CategoryParent {
   id: string
   name: string
