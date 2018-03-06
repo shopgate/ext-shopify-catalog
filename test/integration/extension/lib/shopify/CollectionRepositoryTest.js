@@ -1,22 +1,20 @@
-const ShopifyAdminClient = require('../../../../../extension/lib/shopify/AdminClient')
+const shopifyAdminClient = require('../../../../../extension/lib/shopify/AdminClient')
 const ShopifyCollectionRepository = require('../../../../../extension/lib/shopify/CollectionRepository')
-const StoreFrontApiFactory = require('../../../../../extension/lib/shopify/StorefrontClientFactory')
+const storeFrontApiClient = require('../../../../../extension/lib/shopify/StorefrontClient')
 const integrationCredentials = require('../../../../../.integration-credentials')
 const assert = require('assert')
 
-describe('CollectionRepositoryClient', () => {
+describe('CollectionRepository', () => {
   /** @type {ShopifyCollectionRepository} */
   let subjectUnderTest
 
   beforeEach(() => {
-    const StorefrontApiClientFactory = new StoreFrontApiFactory(
-      integrationCredentials.storefrontAccessToken,
-      integrationCredentials.shopName
-    )
-
     subjectUnderTest = ShopifyCollectionRepository.create(
-      StorefrontApiClientFactory.create(),
-      new ShopifyAdminClient(integrationCredentials.accessToken, integrationCredentials.shopName)
+      storeFrontApiClient.createClient(
+        integrationCredentials.storefrontAccessToken,
+        integrationCredentials.shopName
+      ),
+      shopifyAdminClient(integrationCredentials.accessToken, integrationCredentials.shopName)
     )
   })
 
