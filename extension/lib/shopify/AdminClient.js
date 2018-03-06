@@ -11,14 +11,6 @@ class ShopifyAdminClient extends ShopifyClient {
   }
 
   /**
-   * @param {number} id
-   * @return {Promise<number>}
-   */
-  async getProductCountByCollectionId (id) {
-    return this.product.count({collection_id: id})
-  }
-
-  /**
    * @return {Promise<ShopifyAccessTokenObject>}
    */
   async createStorefrontAccessToken () {
@@ -26,16 +18,9 @@ class ShopifyAdminClient extends ShopifyClient {
   }
 
   /**
-   * @return {Promise<ShopifyAccessTokenObject[]>}
-   */
-  async getStorefrontAccessTokens () {
-    return this.storefrontAccessToken.list()
-  }
-
-  /**
    * @return {Promise<string>}
    */
-  async getStorefrontAccessToken () {
+  async getFirstApplicableStorefrontAccessToken () {
     const accessTokens = await this.getStorefrontAccessTokens()
     const applicableAccessToken = accessTokens.find(token => {
       if (token.title === STOREFRONT_ACCESS_TOKEN_TITLE) {
@@ -53,4 +38,11 @@ class ShopifyAdminClient extends ShopifyClient {
   }
 }
 
-module.exports = ShopifyAdminClient
+/**
+ * @param {string} adminAccessToken
+ * @param {string} shopName
+ * @returns {ShopifyAdminClient}
+ */
+module.exports = function (adminAccessToken, shopName) {
+  return new ShopifyAdminClient(adminAccessToken, shopName)
+}

@@ -1,9 +1,9 @@
 const assert = require('assert')
-const client = require('../../../../../extension/lib/shopify/StorefrontClient')
+const storefrontClient = require('../../../../../extension/lib/shopify/StorefrontClient')
 
-describe('StoreFrontApiFactory', () => {
-  it('should return an instance of GraphQlClient that is able to contact the Shopify Storefront API', async () => {
-    const graphQlClient = client.clientFactory('351c122017d0f2a957d32ae728ad749c', 'graphql')
+describe('StoreFrontClient', () => {
+  it('should create GraphQlClient that is able to contact the Shopify Storefront API', async () => {
+    const graphQlClient = storefrontClient.createClient('351c122017d0f2a957d32ae728ad749c', 'graphql')
 
     const query = graphQlClient.query((root) => {
       root.add('shop', (shop) => {

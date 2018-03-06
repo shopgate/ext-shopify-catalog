@@ -78,7 +78,7 @@ function clientFactory (shopifyStorefrontAccessToken, shopName) {
 }
 
 module.exports = {
-  clientFactory: clientFactory,
+  createClient: clientFactory,
   isAccessForbidden: isAccessForbidden,
   isServerError: isServerError,
   isRequestFailedError: isRequestFailedError

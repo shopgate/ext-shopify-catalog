@@ -1,7 +1,7 @@
 const shopifyStorefrontErrorLogger = require('./pipeline/shopifyStorefrontErrorLogger')
 const ShopgatePipelineCallFailedError = require('./pipeline/CallFailedError')
 const {isAccessForbidden} = require('../shopify/StorefrontClient')
-const ShopgateAuthorisationRepository = require('./AuthorisationRepository')
+const ShopgateAuthorisation = require('./Authorisation')
 
 /**
  * @param {Error} err
@@ -16,7 +16,7 @@ module.exports = function (err, context) {
   }
 
   if (isAccessForbidden(err)) {
-    ShopgateAuthorisationRepository.create(context)
+    ShopgateAuthorisation.create(context)
       .releaseShopifyStorefrontToken()
       .catch((err) => {
         context.log.error({

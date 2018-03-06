@@ -1,18 +1,22 @@
-const ShopgateAuthorisationRepository = require('../../../../../extension/lib/shopgate/AuthorisationRepository')
+const ShopgateAuthorisation = require('../../../../../extension/lib/shopgate/Authorisation')
 const ShopgateExtensionStorage = require('../../../../../extension/lib/shopgate/ExtensionStorage')
 const ShopifyAdminClient = require('../../../../../extension/lib/shopify/AdminClient')
 
 const sinon = require('sinon')
 const assert = require('assert')
 
-describe('ShopgateAuthorisationRepository', function () {
+describe('ShopgateAuthorisation', function () {
   let shopgateExtensionStorageStub
   let shopifyAdminClientStub
+  const shopifyAdminClient = ShopifyAdminClient('fake', 'fake')
   let subjectUnderTest
   beforeEach(() => {
     shopgateExtensionStorageStub = sinon.createStubInstance(ShopgateExtensionStorage)
-    shopifyAdminClientStub = sinon.stub.createStubInstance(ShopifyAdminClient)
-    subjectUnderTest = new ShopgateAuthorisationRepository(shopgateExtensionStorageStub, shopifyAdminClientStub)
+    shopifyAdminClientStub = sinon.stub(shopifyAdminClient, 'createStorefrontAccessToken')
+    subjectUnderTest = new ShopgateAuthorisation(shopgateExtensionStorageStub, shopifyAdminClient)
+  })
+  afterEach(() => {
+    shopifyAdminClientStub.restore()
   })
 
   it('should ask extension storage in order to get presaved shopify storefront authorisation token', async function () {
@@ -23,7 +27,7 @@ describe('ShopgateAuthorisationRepository', function () {
 
   it('should ask admin api client client for shopify storefront authorisation token', async function () {
     shopgateExtensionStorageStub.get.returns(null)
-    shopifyAdminClientStub.createStorefrontAccessToken.returns('fake auth token')
+    shopifyAdminClientStub.returns({access_token: 'fake auth token'})
 
     assert.equal(await subjectUnderTest.acquireShopifyStorefrontToken(), 'fake auth token')
   })

@@ -1,13 +1,11 @@
 const assert = require('assert')
-const StoreFrontApiFactory = require('../../../../../../../extension/lib/shopify/StorefrontClientFactory')
+const storeFrontApiClient = require('../../../../../../../extension/lib/shopify/StorefrontClient')
 const GetGraphQL = require('../../../../../../../extension/lib/shopify/collection-repository/command/GetGraphQl')
 const integrationCredentials = require('../../../../../../../.integration-credentials')
 
 describe('GetGraphQl Command', () => {
   it('should return collection data', async () => {
-    const storeFrontApiFactory = new StoreFrontApiFactory(integrationCredentials.storefrontAccessToken, integrationCredentials.shopName)
-
-    const shopifyStorefrontClient = storeFrontApiFactory.create()
+    const shopifyStorefrontClient = storeFrontApiClient.createClient(integrationCredentials.storefrontAccessToken, integrationCredentials.shopName)
 
     const getCommand = new GetGraphQL(shopifyStorefrontClient)
 
