@@ -12,8 +12,8 @@ const ShopifyStorefrontClientServerError = require('./storefront-client/ServerEr
  * @param {string} shopifyStoreFrontAccessToken
  * @return {Object}
  */
-function fetcher (url, graphQLParams, shopifyStoreFrontAccessToken) {
-  return fetch(url, {
+async function fetcher (url, graphQLParams, shopifyStoreFrontAccessToken) {
+  const response = await fetch(url, {
     body: JSON.stringify(graphQLParams),
     method: 'POST',
     mode: 'cors',
@@ -22,21 +22,21 @@ function fetcher (url, graphQLParams, shopifyStoreFrontAccessToken) {
       Accept: 'application/json',
       'X-Shopify-Storefront-Access-Token': shopifyStoreFrontAccessToken
     }
-  }).then(function (response) {
-    if (response.status === 200) {
-      return response.json()
-    }
-
-    if (response.status === 403) {
-      throw new ShopifyStorefrontClientAccessForbiddenError(url, shopifyStoreFrontAccessToken)
-    }
-
-    if (response.status >= 500) {
-      throw new ShopifyStorefrontClientServerError(response.status, url, JSON.stringify(graphQLParams))
-    }
-
-    throw new ShopifyStorefrontClientRequestFailedError(response.status, url, JSON.stringify(graphQLParams))
   })
+
+  if (response.status === 200) {
+    return response.json()
+  }
+
+  if (response.status === 403) {
+    throw new ShopifyStorefrontClientAccessForbiddenError(url, shopifyStoreFrontAccessToken)
+  }
+
+  if (response.status >= 500) {
+    throw new ShopifyStorefrontClientServerError(response.status, url, JSON.stringify(graphQLParams))
+  }
+
+  throw new ShopifyStorefrontClientRequestFailedError(response.status, url, JSON.stringify(graphQLParams))
 }
 
 /**
