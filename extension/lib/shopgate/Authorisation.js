@@ -17,15 +17,15 @@ class ShopgateAuthorisation {
    * @returns {Promise<string>}
    */
   async acquireShopifyStorefrontToken () {
-    let shopifyStorefrontAcessToken = await this._pipelineStorage.get(STOREFRONT_AUTH_TOKEN)
-    if (!shopifyStorefrontAcessToken) {
+    let shopifyStorefrontAccessToken = await this._pipelineStorage.get(STOREFRONT_AUTH_TOKEN)
+    if (!shopifyStorefrontAccessToken) {
       const tokenResponse = await this._shopifyAdminClient.createStorefrontAccessToken()
-      shopifyStorefrontAcessToken = tokenResponse.access_token
+      shopifyStorefrontAccessToken = tokenResponse.access_token
 
-      await this._pipelineStorage.set(STOREFRONT_AUTH_TOKEN, shopifyStorefrontAcessToken)
+      await this._pipelineStorage.set(STOREFRONT_AUTH_TOKEN, shopifyStorefrontAccessToken)
     }
 
-    return shopifyStorefrontAcessToken
+    return shopifyStorefrontAccessToken
   }
 
   /**
