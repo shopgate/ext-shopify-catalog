@@ -1,6 +1,7 @@
 const assert = require('assert')
 const StoreFrontApiFactory = require('../../../../../../../extension/lib/shopify/StorefrontClientFactory')
 const GetGraphQL = require('../../../../../../../extension/lib/shopify/collection-repository/command/GetGraphQl')
+const IdentifierConverter = require('../../../../../../../extension/lib/shopify/collection-repository/command/category/IdentifierConverter')
 const integrationCredentials = require('../../../../../../../.integration-credentials')
 
 describe('GetGraphQl Command', () => {
@@ -9,7 +10,7 @@ describe('GetGraphQl Command', () => {
 
     const shopifyStorefrontClient = storeFrontApiFactory.create()
 
-    const getCommand = new GetGraphQL(shopifyStorefrontClient)
+    const getCommand = new GetGraphQL(shopifyStorefrontClient, new IdentifierConverter())
 
     const category = await getCommand.execute('integration-test-do-no-touch')
 
