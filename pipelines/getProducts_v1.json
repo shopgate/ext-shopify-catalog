@@ -1,0 +1,40 @@
+{
+  "version": "1",
+  "pipeline": {
+    "id": "getProducts_v1",
+    "public": true,
+    "input": [
+      {"key": "categoryId", "id": "1", "optional": true},
+      {"key": "searchPhrase", "id": "2", "optional": true},
+      {"key": "offset", "id": "4", "optional": true},
+      {"key": "limit", "id": "5", "optional": true},
+      {"key": "sort", "id": "6", "optional": true},
+      {"key": "productIds", "id": "7", "optional": true},
+      {"key": "showInactive", "id": "15", "optional": true},
+    ],
+    "output": [
+      {"key": "totalProductCount", "id": "1000"},
+      {"key": "products", "id": "1001"}
+    ],
+    "steps": [
+      {
+        "type": "extension",
+        "id": "@shopgate/shopify-catalog",
+        "path": "@shopgate/shopify-catalog/lib/getProducts.js",
+        "input": [
+          {"key": "categoryId", "id": "1", "optional": true},
+          {"key": "searchPhrase", "id": "2", "optional": true},
+          {"key": "offset", "id": "4", "optional": true},
+          {"key": "limit", "id": "5", "optional": true},
+          {"key": "sort", "id": "6", "optional": true},
+          {"key": "productIds", "id": "7", "optional": true},
+          {"key": "showInactive", "id": "15", "optional": true},
+        ],
+        "output": [
+          {"key": "totalProductCount", "id": "1000"},
+          {"key": "products", "id": "1001"}
+        ]
+      }
+    ]
+  }
+}
