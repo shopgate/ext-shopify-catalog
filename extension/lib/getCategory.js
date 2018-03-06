@@ -10,7 +10,7 @@ module.exports = async (context, input) => {
   try {
     const shopgateCategoryRepository = await ShopgateCategoryRepository.create(context)
 
-    return shopgateCategoryRepository.getCategory(input.categoryId)
+    return await shopgateCategoryRepository.getCategory(input.categoryId)
   } catch (error) {
     throw shopgateErrorHandler(error, context)
   }

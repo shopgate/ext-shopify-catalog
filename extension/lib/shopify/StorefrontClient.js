@@ -28,7 +28,7 @@ function fetcher (url, graphQLParams, shopifyStoreFrontAccessToken) {
     }
 
     if (response.status === 403) {
-      throw new ShopifyStorefrontClientAccessForbiddenError(response.status, url, shopifyStoreFrontAccessToken)
+      throw new ShopifyStorefrontClientAccessForbiddenError(url, shopifyStoreFrontAccessToken)
     }
 
     if (response.status >= 500) {
@@ -71,7 +71,7 @@ function isRequestFailedError (error) {
 function clientFactory (shopifyStorefrontAccessToken, shopName) {
   const url = 'https://' + shopName + '.myshopify.com/api/graphql'
   return new GraphQlClient(types, {
-    fetcher: (graphQLParams) => {
+    fetcher: async (graphQLParams) => {
       return fetcher(url, graphQLParams, shopifyStorefrontAccessToken)
     }
   })

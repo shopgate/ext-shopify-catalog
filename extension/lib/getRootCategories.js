@@ -9,7 +9,7 @@ module.exports = async (context) => {
   try {
     const shopgateCategoryRepository = await ShopgateCategoryRepository.create(context)
 
-    return shopgateCategoryRepository.getRootCategories()
+    return await shopgateCategoryRepository.getRootCategories()
   } catch (error) {
     throw shopgateErrorHandler(error, context)
   }

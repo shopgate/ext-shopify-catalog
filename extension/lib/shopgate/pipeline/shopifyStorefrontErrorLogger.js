@@ -7,7 +7,8 @@ const {isAccessForbidden, isServerError, isRequestFailedError} = require('../../
 function logAccessForbidden (err, logger) {
   logger.error({
     msg: err.message,
-    url: err.url
+    url: err.url,
+    type: 'accessForbidden'
   })
 }
 
@@ -20,7 +21,8 @@ function logRequestFailed (err, logger) {
     msg: err.message,
     url: err.url,
     statusCode: err.statusCode,
-    requestBody: err.requestBody
+    requestBody: err.requestBody,
+    type: 'requestFailed'
   })
 }
 
@@ -33,7 +35,8 @@ function logServerError (err, logger) {
     msg: err.message,
     url: err.url,
     statusCode: err.statusCode,
-    requestBody: err.requestBody
+    requestBody: err.requestBody,
+    type: 'serverError'
   })
 }
 
