@@ -1,5 +1,5 @@
 const ShopifyClient = require('shopify-api-node')
-const STOREFRONT_ACCESS_TOKEN_TITLE = 'shopgate-app-access-token'
+const STOREFRONT_ACCESS_TOKEN_TITLE = 'sgconnect-app-access-token'
 
 class ShopifyAdminClient extends ShopifyClient {
   /**
