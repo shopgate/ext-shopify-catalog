@@ -1,55 +1,37 @@
-const ShopifyProductRepository = require('../shopify/ProductRepository')
-const ShopifyStorefrontClientFactory = require('../shopify/StorefrontClientFactory')
-const ShopifyAdminClientFactory = require('../shopify/AdminClientFactory')
-
-class ShopgateProductRepository {
+class ShopgateProduct {
   /**
-   * @param {ShopifyProductRepository} shopifyProductRepository
+   * @param {string} id
+   * @param {string} name
+   * @param {string} featuredImageUrl
+   * @param price
    */
-  constructor (shopifyProductRepository) {
-    this._shopifyProductRepository = shopifyProductRepository
+  constructor (id, name, featuredImageUrl, price) {
+    this._id = id
+    this._featuredImageUrl = featuredImageUrl
+    this._name = name
+    this._price = price
   }
 
   /**
-   * @param {string[]} productIds
-   * @param {number} offset
-   * @param {number} limit
-   * @param {string} sort
-   * @param {boolean} showInactive
-   * @returns {Promise<GetProductsResponse>}
+   * @returns {string}
    */
-  async getByProductIds (productIds, offset, limit, sort, showInactive) {
-    return {products: [], totalProductCount: 0}
+  get id () {
+    return this._id
   }
 
   /**
-   * @param {number} categoryId
-   * @param {number} offset
-   * @param {number} limit
-   * @param {string} sort
-   * @param {boolean} showInactive
-   * @returns {Promise<GetProductsResponse>}
+   * @returns {string}
    */
-  async getByCategoryId (categoryId, offset, limit, sort, showInactive) {
-    return {products: [], totalProductCount: 0}
+  get featuredImageUrl () {
+    return this._featuredImageUrl
   }
 
   /**
-   * @param {PipelineContext} context
-   * @returns {ShopgateProductRepository}
+   * @returns {string}
    */
-  static create (context) {
-    const shopifyAdminFactory = new ShopifyAdminClientFactory(context.config.shopifyAccessToken, context.config.shopifyShopAlias)
-    const shopifyStorefrontFactory = new ShopifyStorefrontClientFactory('todo', context.config.shopifyShopAlias)
-
-    // todo inject the dependencies - storefront and admin client
-    const shopifyProductRepository = ShopifyProductRepository.create(
-      shopifyStorefrontFactory.create(),
-      shopifyAdminFactory.create()
-    )
-
-    return new ShopgateProductRepository(shopifyProductRepository)
+  get name () {
+    return this._name
   }
 }
 
-module.exports = ShopgateProductRepository
+module.exports = ShopgateProduct

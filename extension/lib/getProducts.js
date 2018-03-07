@@ -1,4 +1,4 @@
-const ShopgateProductRepository = require('./shopgate/Product')
+const ShopgateProductRepository = require('./shopgate/ProductRepository')
 const ShopgateProductDefaultValues = require('./shopgate/product/DefaultValues')
 
 /**
