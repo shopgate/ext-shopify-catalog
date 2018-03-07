@@ -2,7 +2,7 @@ const ShopifyCollectionVariants = require('./product/Variants')
 
 class ShopifyProduct {
   /**
-   * @param {string} id
+   * @param {number} id
    * @param {string} title
    * @param {string} handle
    * @param {number} price
@@ -20,7 +20,7 @@ class ShopifyProduct {
   }
 
   /**
-   * @returns {string}
+   * @returns {number}
    */
   get id () {
     return this._id
