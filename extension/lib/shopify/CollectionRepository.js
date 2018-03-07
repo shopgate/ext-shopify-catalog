@@ -33,10 +33,12 @@ class ShopifyCollectionRepository {
       return this._shopifyCollectionCommandFactory.createGetProductCount().execute(collection.id)
     })
 
-    const collectionCategoryCounts = await Promise.all(productCountPromises)
+    const collectionProductCounts = await Promise.all(productCountPromises)
 
     return rawCollections.map((rawCollection, index) => {
-      return new ShopifyCollection(rawCollection.id, rawCollection.handle, rawCollection.title, 0, collectionCategoryCounts[index], rawCollection.image)
+      return new ShopifyCollection(rawCollection.id, rawCollection.handle, rawCollection.title, 0, collectionProductCounts[index], rawCollection.image)
+    }).filter(collection => {
+      return collection.productCount > 0
     })
   }
 

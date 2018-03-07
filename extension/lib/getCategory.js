@@ -1,4 +1,5 @@
-const ShopgateCategoryExtensionPipeline = require('./shopgate/CategoryExtensionPipeline')
+const ShopgateCategoryRepository = require('./shopgate/CategoryRepository')
+const shopgateErrorHandler = require('./shopgate/errorHandler')
 
 /**
  * @param {PipelineContext} context
@@ -6,11 +7,11 @@ const ShopgateCategoryExtensionPipeline = require('./shopgate/CategoryExtensionP
  * @returns {Promise<GetCategoryResponse>}
  */
 module.exports = async (context, input) => {
-  const shopgateCategoryExtensionPipeline = ShopgateCategoryExtensionPipeline.create(context)
   try {
-    return shopgateCategoryExtensionPipeline.getCategory(input.categoryId)
+    const shopgateCategoryRepository = await ShopgateCategoryRepository.create(context)
+
+    return await shopgateCategoryRepository.getCategory(input.categoryId)
   } catch (error) {
-    context.log.error(error)
-    throw error
+    throw shopgateErrorHandler(error, context)
   }
 }

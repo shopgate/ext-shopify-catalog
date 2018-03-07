@@ -1,5 +1,5 @@
 const ShopifyClient = require('shopify-api-node')
-const STOREFRONT_ACCESS_TOKEN_TITLE = 'shopgate-app-access-token'
+const STOREFRONT_ACCESS_TOKEN_TITLE = 'sgconnect-app-access-token'
 
 class ShopifyAdminClient extends ShopifyClient {
   /**
@@ -11,46 +11,18 @@ class ShopifyAdminClient extends ShopifyClient {
   }
 
   /**
-   * @param {number} id
-   * @return {Promise<number>}
-   */
-  async getProductCountByCollectionId (id) {
-    return this.product.count({collection_id: id})
-  }
-
-  /**
    * @return {Promise<ShopifyAccessTokenObject>}
    */
   async createStorefrontAccessToken () {
     return this.storefrontAccessToken.create({title: STOREFRONT_ACCESS_TOKEN_TITLE})
   }
-
-  /**
-   * @return {Promise<ShopifyAccessTokenObject[]>}
-   */
-  async getStorefrontAccessTokens () {
-    return this.storefrontAccessToken.list()
-  }
-
-  /**
-   * @return {Promise<string>}
-   */
-  async getStorefrontAccessToken () {
-    const accessTokens = await this.getStorefrontAccessTokens()
-    const applicableAccessToken = accessTokens.find(token => {
-      if (token.title === STOREFRONT_ACCESS_TOKEN_TITLE) {
-        return token
-      }
-    })
-
-    if (applicableAccessToken) {
-      return applicableAccessToken.access_token
-    }
-
-    const createdAccessToken = await this.createStorefrontAccessToken()
-
-    return createdAccessToken.access_token
-  }
 }
 
-module.exports = ShopifyAdminClient
+/**
+ * @param {string} adminAccessToken
+ * @param {string} shopName
+ * @returns {ShopifyAdminClient}
+ */
+module.exports = function (adminAccessToken, shopName) {
+  return new ShopifyAdminClient(adminAccessToken, shopName)
+}

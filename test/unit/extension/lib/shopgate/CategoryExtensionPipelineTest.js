@@ -1,4 +1,4 @@
-const ShopgateCategoryExtensionPipeline = require('../../../../../extension/lib/shopgate/CategoryExtensionPipeline')
+const ShopgateCategoryExtensionPipeline = require('../../../../../extension/lib/shopgate/CategoryRepository')
 const assert = require('assert')
 const sinon = require('sinon')
 
