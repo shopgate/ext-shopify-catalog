@@ -7,8 +7,37 @@ This Shopify extension will request categories and products directly via Shopify
 # Usage
 
 ## Local Development
-To be able to work with this extension, you have to create a config.json within the "sgconnect-shopify-catalog/extension" folder.
-This file has to contain the following information:
+To be able to work with this extension, you have to configure credentials that will allow it to connect to Shopify.
+Configuration can be done in two ways:
+* using a configuration key for a shop in Shopgate - see extension-config.json or
+* provide static configuration in extension-config.json - example configuration:
+
+
+	{
+        "version": "0.1.0",
+        "id": "@shopgate/shopify-catalog",
+        "components": [
+        ],
+        "configuration": {
+            "shopifyShopAlias": {
+                "type": "static",
+                "destination" : "backend",
+                "params": {
+                    "value":  "YourAlias"
+                }
+            },
+            "shopifyAccessToken": {
+                "type": "static",
+                "destination" : "backend",
+                "params": {
+                    "value":  "YourAccessToken"
+                }
+            }
+        }
+    }
+
+    
+When configured properly and you start the Platform SDK backend extension/config.json file will be generated. It usually looks like:
 
 	{
 		"shopifyShopAlias": "YourAlias",
