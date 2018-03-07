@@ -37,7 +37,7 @@ Configuration can be done in two ways:
     }
 
     
-When configured properly and you start the sdk backend extension/config.json file will be generated. It usually looks like:
+When configured properly and you start the Platform SDK backend extension/config.json file will be generated. It usually looks like:
 
 	{
 		"shopifyShopAlias": "YourAlias",
