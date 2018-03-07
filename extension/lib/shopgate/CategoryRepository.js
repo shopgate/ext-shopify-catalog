@@ -1,8 +1,9 @@
 const ShopifyCollectionRepository = require('../shopify/CollectionRepository')
-const ShopifyStorefrontClientFactory = require('../shopify/StorefrontClientFactory')
-const ShopifyAdminClientFactory = require('../shopify/AdminClientFactory')
+const shopifyStorefrontClient = require('../shopify/StorefrontClient')
+const shopifyAdminClient = require('../shopify/AdminClient')
+const ShopgateAuthorisation = require('./Authorisation')
 
-class ShopgateCategoryExtensionPipeline {
+class ShopgateCategoryRepository {
   /**
    * @param {ShopifyCollectionRepository} shopifyCollectionRepository
    */
@@ -49,20 +50,18 @@ class ShopgateCategoryExtensionPipeline {
 
   /**
    * @param {PipelineContext} context
-   * @returns {ShopgateCategoryExtensionPipeline}
+   * @returns {Promise<ShopgateCategoryRepository>}
    */
-  static create (context) {
-    const shopifyAdminFactory = new ShopifyAdminClientFactory(context.config.shopifyAccessToken, context.config.shopifyShopAlias)
-    const shopifyStorefrontFactory = new ShopifyStorefrontClientFactory('todo', context.config.shopifyShopAlias)
+  static async create (context) {
+    const shopgateAuthorisation = ShopgateAuthorisation.create(context)
 
-    // todo inject the dependencies - storefront and admin client
     const shopifyCollectionRepository = ShopifyCollectionRepository.create(
-      shopifyStorefrontFactory.create(),
-      shopifyAdminFactory.create()
+      shopifyStorefrontClient.createClient(await shopgateAuthorisation.acquireShopifyStorefrontToken(), context.config.shopifyShopAlias),
+      shopifyAdminClient(context.config.shopifyAccessToken, context.config.shopifyShopAlias)
     )
 
-    return new ShopgateCategoryExtensionPipeline(shopifyCollectionRepository)
+    return new ShopgateCategoryRepository(shopifyCollectionRepository)
   }
 }
 
-module.exports = ShopgateCategoryExtensionPipeline
+module.exports = ShopgateCategoryRepository
