@@ -1,0 +1,20 @@
+{
+  "version": "1",
+  "pipeline": {
+    "id": "getCategoryChildren_v1",
+    "public": true,
+    "input": [
+      {"key": "categoryId", "id": "1"}
+    ],
+    "output": [{"key": "categories", "id": "1000"}],
+    "steps": [
+      {
+        "type": "extension",
+        "id": "@shopgate/shopify-catalog",
+        "path": "@shopgate/shopify-catalog/lib/getCategoryChildren.js",
+        "input": [{"key": "categoryId", "id": "1"}],
+        "output": [{"key": "categories", "id": "1000"}]
+      }
+    ]
+  }
+}
