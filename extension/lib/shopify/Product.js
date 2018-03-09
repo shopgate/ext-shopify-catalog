@@ -2,25 +2,25 @@ const ShopifyCollectionVariants = require('./product/Variants')
 
 class ShopifyProduct {
   /**
-   * @param {string} id
+   * @param {number} id
    * @param {string} title
    * @param {string} handle
    * @param {number} price
    * @param {number} compareAtPrice
-   * @param {string} image
+   * @param {ShopifyProductImage[]} images
    */
-  constructor (id, title, handle, price, compareAtPrice, image) {
+  constructor (id, title, handle, price, compareAtPrice, images) {
     this._id = id
     this._title = title
     this._handle = handle
     this._price = price
     this._compareAtPrice = compareAtPrice
-    this._image = image
+    this._images = images
     this._variants = new ShopifyCollectionVariants()
   }
 
   /**
-   * @returns {string}
+   * @returns {number}
    */
   get id () {
     return this._id
@@ -55,10 +55,26 @@ class ShopifyProduct {
   }
 
   /**
-   * @returns {string}
+   * @returns {ShopifyProductImage[]}
    */
-  get image () {
-    return this._image
+  get images () {
+    return this._images
+  }
+
+  /**
+   * @param {ShopifyProductImage} image
+   */
+  addImage (image) {
+    this._images.push(image)
+  }
+
+  /**
+   * @returns {ShopifyProductImage|null}
+   */
+  get mainImage () {
+    return this._images.find((image) => {
+      return image.position === 1
+    }) || null
   }
 
   /**

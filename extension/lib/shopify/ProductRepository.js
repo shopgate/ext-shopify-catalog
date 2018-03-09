@@ -10,7 +10,7 @@ class ShopifyProductRepository {
   }
 
   /**
-   * @param {string[]} ids
+   * @param {number[]} ids
    * @param {number} offset
    * @param {number } limit
    * @param {boolean} showInactive

@@ -5,7 +5,7 @@ class ShopifyCollection {
     this._title = title
     this._childrenCount = childrenCount
     this._productCount = productCount
-    this._image = image
+    this._images = image
     this._children = children
   }
 
@@ -30,7 +30,7 @@ class ShopifyCollection {
   }
 
   get image () {
-    return this._image
+    return this._images
   }
 
   get children () {

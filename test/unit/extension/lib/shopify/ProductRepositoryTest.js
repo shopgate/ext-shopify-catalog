@@ -1,15 +1,15 @@
-const ShopgateProductRepository = require('../../../../../extension/lib/shopify/ProductRepository')
-const ShopgateProductRepositoryCommandFactory = require('../../../../../extension/lib/shopify/product-repository/CommandFactory')
+const ShopifyProductRepository = require('../../../../../extension/lib/shopify/ProductRepository')
+const ShopifyProductRepositoryCommandFactory = require('../../../../../extension/lib/shopify/product-repository/CommandFactory')
 const ShopifyProduct = require('../../../../../extension/lib/shopify/Product')
 
 const sinon = require('sinon')
 const assert = require('assert')
 
-describe('ShopgateProductRepositoryTest', function () {
-  const commandFactoryStub = sinon.createStubInstance(ShopgateProductRepositoryCommandFactory)
+describe('ShopifyProductRepositoryTest', function () {
+  const commandFactoryStub = sinon.createStubInstance(ShopifyProductRepositoryCommandFactory)
   let subjectUnderTest
   beforeEach(() => {
-    subjectUnderTest = new ShopgateProductRepository(commandFactoryStub)
+    subjectUnderTest = new ShopifyProductRepository(commandFactoryStub)
   })
 
   it('listByCollectionId should map command response to the shopify product', async function () {
@@ -18,12 +18,12 @@ describe('ShopgateProductRepositoryTest', function () {
 
     commandFactoryStub.createListByCollection.returns(execute)
     executeMock.expects('execute').withArgs('fake collection id', 0, 20, true).returns([
-      {id: '1234', handle: 'men', title: 'test', image: 'image', price: 10.00, compareAtPrice: 20.00}
+      {id: 1234, handle: 'men', title: 'test', image: 'image', price: 10.00, compareAtPrice: 20.00}
     ])
     const products = await subjectUnderTest.listByCollectionId('fake collection id', 0, 20, true)
     assert(commandFactoryStub.createListByCollection.called)
     assert.deepEqual(products, [
-      new ShopifyProduct('1234', 'test', 'men', 10.00, 20.00, 'image')
+      new ShopifyProduct(1234, 'test', 'men', 10.00, 20.00, 'image')
     ])
 
     executeMock.verify()
@@ -35,13 +35,13 @@ describe('ShopgateProductRepositoryTest', function () {
     let executeMock = sinon.mock(execute)
 
     commandFactoryStub.createListByIds.returns(execute)
-    executeMock.expects('execute').withArgs(['fake product id'], 0, 20, true).returns([
-      {id: 'fake product id', handle: 'men', title: 'test', image: 'image', price: 10.00, compareAtPrice: 20.00}
+    executeMock.expects('execute').withArgs([9999999], 0, 20, true).returns([
+      {id: 9999999, handle: 'men', title: 'test', image: 'image', price: 10.00, compareAtPrice: 20.00}
     ])
-    const products = await subjectUnderTest.listByIds(['fake product id'], 0, 20, true)
+    const products = await subjectUnderTest.listByIds([9999999], 0, 20, true)
     assert(commandFactoryStub.createListByIds.called)
     assert.deepEqual(products, [
-      new ShopifyProduct('fake product id', 'test', 'men', 10.00, 20.00, 'image')
+      new ShopifyProduct(9999999, 'test', 'men', 10.00, 20.00, 'image')
     ])
 
     executeMock.verify()
