@@ -1,5 +1,6 @@
-# Shopgate Connect - Shopify Catalog
-[![GitHub license](http://dmlc.github.io/img/apache2.svg)](LICENSE.md)
+# Shopgate Connect - Shopify Catalog Extension
+
+[![GitHub license](http://dmlc.github.io/img/apache2.svg)](LICENSE)
 [![Build Status](https://travis-ci.org/shopgate/sgconnect-shopify-catalog.svg?branch=master)](https://travis-ci.org/shopgate/sgconnect-shopify-catalog)
 
 This Shopify extension will request categories and products directly via Shopify Api.
@@ -50,7 +51,7 @@ See [CHANGELOG.md](CHANGELOG.md) file for more information.
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) file for more information.
+See [CONTRIBUTING.md](docs/CONTRIBUTING.md) file for more information.
 
 ## About Shopgate
 
@@ -62,6 +63,6 @@ apps and mobile websites for the iPhone, iPad, Android smartphones and tablets.
 
 ## License
 
-Shopgate Connect - Extension Blank is available under the Apache License, Version 2.0.
+This extension is available under the Apache License, Version 2.0.
 
-See the [LICENSE](./LICENSE.md) file for more information.
+See the [LICENSE](./LICENSE) file for more information.
