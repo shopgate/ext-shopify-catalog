@@ -15,7 +15,9 @@
     "cover": "nyc _mocha --use_strict --timeout 4000 --require ../test/setupBackend.js --recursive ../test/integration --recursive ../test/unit",
     "schema:update": "npm run schema:fetch && npm run schema:transform-to-types && eslint --fix lib/shopify/GraphQlTypes.js",
     "schema:fetch": "graphql-js-schema-fetch --url 'https://graphql.myshopify.com/api/graphql' --header 'Authorization: Basic MzUxYzEyMjAxN2QwZjJhOTU3ZDMyYWU3MjhhZDc0OWM=' | jq '.' > schema.json",
-    "schema:transform-to-types": "graphql-js-schema --schema-file schema.json --outdir ./lib/shopify/ --schema-bundle-name 'Types' --bundle-only && mv lib/shopify/types.js lib/shopify/GraphQlTypes.js && sed -i -e 's/export default types/exports.default = types/g' lib/shopify/GraphQlTypes.js"
+    "schema:transform-to-types": "graphql-js-schema --schema-file schema.json --outdir ./lib/shopify/ --schema-bundle-name 'Types' --bundle-only && mv lib/shopify/types.js lib/shopify/GraphQlTypes.js && sed -i -e 's/export default types/exports.default = types/g' lib/shopify/GraphQlTypes.js",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "lint-staged": {
     "*.js": "npm run lint"
@@ -28,7 +30,8 @@
   "dependencies": {
     "graphql-js-client": "^0.9.1",
     "node-fetch": "^2.0.0",
-    "shopify-api-node": "^2.11.0"
+    "shopify-api-node": "^2.11.0",
+    "snyk": "^1.189.0"
   },
   "devDependencies": {
     "@types/chai": "^4.1.2",
@@ -54,5 +57,6 @@
     "shopify-api-node-interface": "^1.0.11",
     "sinon": "^4.1.2",
     "standard": "^10.0.3"
-  }
+  },
+  "snyk": true
 }
